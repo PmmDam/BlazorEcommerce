@@ -14,7 +14,14 @@ namespace BlazorEcommerce
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
+            //Añadimos las dependencias de Swagger para poder añadir una interfaz de usuario a nuestras APIs
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
             var app = builder.Build();
+
+            //Le decimos a la aplicación que utilice la UI de Swagger
+            app.UseSwaggerUI();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -27,6 +34,10 @@ namespace BlazorEcommerce
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //Le decimos a la aplicación que utilice Swagger
+            app.UseSwagger();
+
 
             app.UseHttpsRedirection();
 
