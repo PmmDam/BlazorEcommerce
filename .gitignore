@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+
+#Fichero que contiene la cadena de conexión con la base de datos
+**/appsettings.json
 # User-specific files
 *.rsuser
 *.suo
