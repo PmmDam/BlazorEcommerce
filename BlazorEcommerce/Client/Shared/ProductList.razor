@@ -38,11 +38,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await Http.GetFromJsonAsync<List<ProductModel>>("api/product");
+        var result = await Http.GetFromJsonAsync<ServiceResponse<List<ProductModel>>>("api/product");
 
-        if(result != null)
+        if(result != null && result.Data !=null)
         {
-            products = result;
+            products = result.Data;
         }
     }
 

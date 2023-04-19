@@ -2,6 +2,7 @@ global using BlazorEcommerce.Shared;
 global using Microsoft.EntityFrameworkCore;
 global using BlazorEcommerce.Server.Data;
 using Microsoft.AspNetCore.ResponseCompression;
+using BlazorEcommerce.Server.Services.ProductService;
 
 namespace BlazorEcommerce
 {
@@ -25,6 +26,9 @@ namespace BlazorEcommerce
             //Añadimos las dependencias de Swagger para poder añadir una interfaz de usuario a nuestras APIs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //Inyectamos las dependencias de las clases creadas en el proyecto
+            builder.Services.AddScoped<IProductService,ProductService>();
 
             var app = builder.Build();
 
