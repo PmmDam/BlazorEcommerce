@@ -4,46 +4,46 @@
 <!--BlazorEcommerce.Shared contiene todos los modelos y todo lo que se deba compartir entre cliente y servidor-->
 @using BlazorEcommerce.Shared
 <!-- Inyección de las dependencias necesarias para realizar una request HTTP desde el cliente-->
-@inject HttpClient Http
+@inject IProductService ProductService
 
-<ul class= "list-unstyled">
 
-    @foreach (var product in products)
-    {
-        <li class="media my-3">
+@if(ProductService.Products == null || ProductService.Products.Count == 0)
+{
+    <span>Loading Products...</span>
+}
+else
+{
+    <ul class= "list-unstyled">
 
-            <div class="media-img-wrapper mr-2">
-                <a href="#">
-                    <img class="media-img" src="@product.ImageUrl" alt="@product.Title"/>
-                </a>
-            </div>
-            <div class="media-body">
-                <a href ="#">
-                    <h4 class="mb-0">@product.Title</h4>
-                </a>
-                <p>@product.Description</p>
-                <h5 class="price">
-                    $@product.Price
-                </h5>
-            </div>
+        @foreach (var product in ProductService.Products)
+        {
+            <li class="media my-3">
 
-        </li>
-    }
-</ul>
+                <div class="media-img-wrapper mr-2">
+                    <a href="#">
+                        <img class="media-img" src="@product.ImageUrl" alt="@product.Title"/>
+                    </a>
+                </div>
+                <div class="media-body">
+                    <a href ="#">
+                        <h4 class="mb-0">@product.Title</h4>
+                    </a>
+                    <p>@product.Description</p>
+                    <h5 class="price">
+                        $@product.Price
+                    </h5>
+                </div>
 
+            </li>
+        }
+    </ul>
+}
 
 
 @code {
-    private static List<ProductModel> products = new List<ProductModel>();
-
     protected override async Task OnInitializedAsync()
     {
-        var result = await Http.GetFromJsonAsync<ServiceResponse<List<ProductModel>>>("api/product");
-
-        if(result != null && result.Data !=null)
-        {
-            products = result.Data;
-        }
+        await ProductService.GetProductsAsync();
     }
 
 
