@@ -4,6 +4,7 @@
     {
         List<ProductModel> Products { get; set; }
         Task GetProductsAsync();
+        Task<ServiceResponse<ProductModel>> GetProductAsync(int productId);
 
 
 

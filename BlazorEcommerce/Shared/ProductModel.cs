@@ -17,7 +17,10 @@ namespace BlazorEcommerce.Shared
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
-
-
+        
+        //Aunque parezca redundante, facilita mucho la vida a la hora de trabajar con EntityFramework
+        //tener el objeto nullable y la clave foranea del mismo. Explicaré los casos de usos en la memoria
+        public CategoryModel? Category { get; set; }
+        public int CategoryId { get; set; }
     }
 }
