@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorEcommerce.Shared
 {
-    public class CategoryModel
+    public class Category
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
