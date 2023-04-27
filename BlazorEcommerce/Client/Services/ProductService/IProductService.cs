@@ -28,7 +28,26 @@
         /// <returns></returns>
         Task<ServiceResponse<Product>> GetProductAsync(int productId);
 
+        /// <summary>
+        /// Centralizamos los mensajes que le podemos dar al usuario en funcion de las casuisticas con el producto.
+        /// Producto no encontrado, Etc...
+        /// </summary>
+        string Message { get; set; }
 
+
+        /// <summary>
+        /// Hace una petición de la lista de productos filtrada por el parámetro de busqueda
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
+        Task SearchProductsAsync(string searchText);
+
+        /// <summary>
+        /// Hace una petición de la lista de sugerencias en función del parámetro de busqueda
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
+        Task<List<string>> GetProductSearchSuggestionsAsync(string searchText);
 
     }
 }
