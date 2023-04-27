@@ -12,7 +12,7 @@
         {
             var response = new ServiceResponse<List<Product>>
             {
-                Data = await _context.Products.ToListAsync()
+                Data = await _context.Products.Include(p=>p.Variants).ToListAsync()
             };
             return response;
         }
@@ -20,7 +20,11 @@
         public async Task<ServiceResponse<Product>> GetProductAsync(int productId)
         {
             var response = new ServiceResponse<Product>();
-            var product = await _context.Products.FindAsync(productId);
+            var product = await _context.Products
+                .Include(p => p.Variants)
+                .ThenInclude(v => v.ProductType)
+                .FirstOrDefaultAsync(p=>p.Id == productId);
+
             if (product == null)
             {
                 response.Success = false;
@@ -37,7 +41,26 @@
         {
             var response = new ServiceResponse<List<Product>>
             {
-                Data = await _context.Products.Where(p => p.Category.Url.ToLower().Equals(categoryUrl.ToLower())).ToListAsync()
+                Data = await _context.Products.Where(p => p.Category.Url.ToLower().Equals(categoryUrl.ToLower())).Include(p => p.Variants).ToListAsync()
+            };
+            return response;
+        }
+
+
+        /// <summary>
+        /// Devuelve un ServiceResponse con una lista de productos que contienen el texto de busqueda en el titulo o en la descripción
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <returns></returns>
+        public async Task<ServiceResponse<List<Product>>> SearchProductsAsync(string searchText)
+        {
+            var response = new ServiceResponse<List<Product>>()
+            {
+                Data = await _context.Products
+                .Where(p => p.Title.ToLower().Contains(searchText.ToLower()) || 
+                p.Description.ToLower().Contains(searchText.ToLower()))
+                .Include(P=>P.Variants)
+                .ToListAsync()
             };
             return response;
         }
