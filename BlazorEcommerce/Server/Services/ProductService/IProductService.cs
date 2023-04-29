@@ -37,5 +37,12 @@
         /// <returns></returns>
         Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText);
 
+
+        /// <summary>
+        /// Devuelve una Response con los productos destacados
+        /// </summary>
+        /// <returns></returns>
+        Task<ServiceResponse<List<Product>>> GetFeaturedProductsAsync();
+
     }
 }

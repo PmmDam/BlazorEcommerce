@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using System.Reflection.Metadata.Ecma335;
 
 namespace BlazorEcommerce.Server.Services.ProductService
 {
@@ -127,6 +128,16 @@ namespace BlazorEcommerce.Server.Services.ProductService
             }
             
             return new ServiceResponse<List<string>> { Data = result};
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetFeaturedProductsAsync()
+        {
+            var response = new ServiceResponse<List<Product>>()
+            {
+                Data = await _context.Products.Where(p => p.Featured).Include(p => p.Variants).ToListAsync()
+            };
+        
+            return response;
         }
     }
 }
