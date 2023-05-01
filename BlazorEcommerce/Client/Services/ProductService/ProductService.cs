@@ -18,6 +18,10 @@ namespace BlazorEcommerce.Client.Services.ProductService
 
         public string Message { get; set; } = "Loading products...";
 
+        public int CurrentPage { get; set; } = 1;
+        public int PageCount { get; set; } = 0;
+
+        public string LastSearchText { get; set; } = string.Empty;
 
         //Hace una petición a la API de todos los productos
         public async Task GetProductsAsync(string? categoryUrl = null)
@@ -30,6 +34,13 @@ namespace BlazorEcommerce.Client.Services.ProductService
                 Products = result.Data;
             }
 
+            CurrentPage = 1;
+            PageCount = 0;
+
+            if(Products.Count == 0) 
+            {
+                Message = "No products found";
+            }
             ProductsChanged.Invoke();
         }
 
@@ -40,13 +51,16 @@ namespace BlazorEcommerce.Client.Services.ProductService
             return result;
         }
 
-        public async Task SearchProductsAsync(string searchText)
+        public async Task SearchProductsAsync(string searchText, int page)
         {
-            var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/search/{searchText}");
+            LastSearchText = searchText;
+            var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearchResultDTO>>($"api/product/search/{searchText}/{page}");
 
             if(result != null && result.Data != null)
             {
-                Products = result.Data;
+                Products = result.Data.Products;
+                CurrentPage = result.Data.CurrentPage;
+                PageCount = result.Data.Pages;
             }
             if(Products.Count == 0)
             {

@@ -27,7 +27,7 @@
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        Task<ServiceResponse<List<Product>>> SearchProductsAsync(string searchText);
+        Task<ServiceResponse<ProductSearchResultDTO>> SearchProductsAsync(string searchText, int page);
 
 
         /// <summary>
