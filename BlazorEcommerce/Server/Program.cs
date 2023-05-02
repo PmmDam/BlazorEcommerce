@@ -5,6 +5,7 @@ global using BlazorEcommerce.Server.Services.ProductService;
 global using BlazorEcommerce.Server.Services.CategoryService;
 
 using Microsoft.AspNetCore.ResponseCompression;
+using BlazorEcommerce.Server.Services.CartService;
 
 namespace BlazorEcommerce
 {
@@ -32,6 +33,7 @@ namespace BlazorEcommerce
             //Inyectamos las dependencias de las clases creadas en el proyecto
             builder.Services.AddScoped<IProductService,ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<ICartService, CartService>();
 
             var app = builder.Build();
 
