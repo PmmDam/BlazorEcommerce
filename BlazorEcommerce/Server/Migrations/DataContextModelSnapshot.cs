@@ -196,7 +196,7 @@ namespace BlazorEcommerce.Server.Migrations
                         });
                 });
 
-            modelBuilder.Entity("BlazorEcommerce.Shared.ProductType", b =>
+            modelBuilder.Entity("BlazorEcommerce.Shared.ProductTypeId", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -426,7 +426,7 @@ namespace BlazorEcommerce.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlazorEcommerce.Shared.ProductType", "ProductType")
+                    b.HasOne("BlazorEcommerce.Shared.ProductTypeId", "ProductTypeId")
                         .WithMany()
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -434,7 +434,7 @@ namespace BlazorEcommerce.Server.Migrations
 
                     b.Navigation("Product");
 
-                    b.Navigation("ProductType");
+                    b.Navigation("ProductTypeId");
                 });
 
             modelBuilder.Entity("BlazorEcommerce.Shared.Product", b =>
