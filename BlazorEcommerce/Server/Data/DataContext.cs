@@ -9,7 +9,7 @@ namespace BlazorEcommerce.Server.Data
 
         }
         /// <summary>
-        /// Los DBSets Contienen los métodos para realizar lanzar queries contra la base de datos
+        /// Los DBSets Contienen los métodos para realizar lanzar contra la base de datos
         /// en función de las entidades a las que representan.
         /// </summary>
         public DbSet<Product> Products { get; set; }

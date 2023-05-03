@@ -20,3 +20,18 @@
     font-weight:600;
     text-align: right;
 }
+.btn-delete{
+    background:none;
+    border:none;
+    padding:0px;
+    color:red;
+    font-size:12px;
+}
+
+    .btn-delet:hover{
+        text-decoration: underline;
+    }
+
+.input-quantity{
+    width:70px;
+}

@@ -39,17 +39,17 @@ else
                 @if(GetSelectedVariant().OriginalPrice > GetSelectedVariant().Price)
                 {
                     <h6 class="text-muted original-price">
-                        $@GetSelectedVariant().OriginalPrice
+                        @GetSelectedVariant().OriginalPrice€
                     </h6>
                 }
 
                 <h4 class="price">
-                    $@GetSelectedVariant().Price
+                    @GetSelectedVariant().Price€
                 </h4>
             }
 
             <button class="btn btn-primary" @onclick="AddToCart">
-                <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp; Add to Cart
+                <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp; Añadir a la cesta
             </button>
         </div>
 
@@ -67,7 +67,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        message = "Loading product...";
+        message = "Cargando producto...";
         var result = await ProductService.GetProductAsync(Id);
 
         if (!result.Success)

@@ -22,14 +22,17 @@ else
                 <div class="name">
                     <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
                     <span>@product.ProductType</span><br />
+                    <button class="btn-delete" @onclick="@(()=> RemoveProductFromCart(product.ProductId,product.ProductTypeId))">Borrar producto</button>
+                    <input class="form-control input-quantity" type="number" value=@product.Quantity @onchange="@((ChangeEventArgs e) => UpdateQuantity(e,product))" min="1"/>
                 </div>
+               
                 <div class="cart-product-price">
-                    @product.Price€
+                    @(product.Price*product.Quantity)€
                 </div>
             </div>
         }
         <div class="cart-product-price">
-            Total (@cartProducts.Count): @cartProducts.Sum(product => @product.Price)€
+            Total (@cartProducts.Count): @cartProducts.Sum(product => @product.Price*product.Quantity)€
         </div>
     </div>
 
@@ -44,6 +47,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadCart();
+
+    }
+
+    private async Task RemoveProductFromCart(int productId,int productTypeId)
+    {
+        await CartService.RemoveProductFromCart(productId, productTypeId);
+        await LoadCart();
+    }
+
+    private async Task LoadCart()
+    {
         if ((await CartService.GetCartItems()).Count == 0)
         {
             message = "La cesta está vacía.";
@@ -53,8 +68,15 @@ else
         {
             cartProducts = await CartService.GetCartProducts();
         }
-
     }
 
-
+    private async Task UpdateQuantity(ChangeEventArgs e,CartProductResponseDTO product)
+    {
+        product.Quantity = int.Parse(e.Value.ToString());
+        if(product.Quantity < 1)
+        {
+            product.Quantity = 1;
+        }
+        await CartService.UpdateQuantity(product);
+    }
 }

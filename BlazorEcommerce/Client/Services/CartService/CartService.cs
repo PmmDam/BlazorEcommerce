@@ -37,7 +37,24 @@ namespace BlazorEcommerce.Client.Services.CartService
         public async Task AddToCart(CartItem cartItem)
         {
             List<CartItem> cart = await InitializeLocalStorageAsync("cart");
-            cart.Add(cartItem);
+            if(cart == null)
+            {
+                cart = new List<CartItem> {};
+            }
+
+            //Comprobamos si el item que queremos añadir está ya en la cesta
+            var sameItem = cart.Find(x=>x.ProductId == cartItem.ProductId && x.ProductTypeId == cartItem.ProductTypeId);
+
+            //Si sameItem no está en la cesta, será igual a null
+            if(sameItem == null)
+            {
+                cart.Add(cartItem);
+            }
+            //Si está en la cesta, incrementamos la cantidad
+            else
+            {
+                sameItem.Quantity += cartItem.Quantity;
+            }
 
             await _localStorage.SetItemAsync("cart", cart);
             OnChange?.Invoke();
@@ -58,6 +75,41 @@ namespace BlazorEcommerce.Client.Services.CartService
 
             return cartProducts.Data;
 
+        }
+
+
+
+        public async Task RemoveProductFromCart(int productId, int productTypeId)
+        {
+            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            if(cart != null)
+            {
+                var cartItem = cart.Find(x=>x.ProductId == productId && x.ProductTypeId == productTypeId);
+                
+                if(cartItem != null)
+                {
+                    cart.Remove(cartItem);
+                    await _localStorage.SetItemAsync("cart", cart);
+                    OnChange?.Invoke();
+                } 
+            }
+        }
+
+
+        public async Task UpdateQuantity(CartProductResponseDTO product)
+        {
+            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            if (cart != null)
+            {
+                var cartItem = cart.Find(x => x.ProductId == product.ProductId && x.ProductTypeId == product.ProductTypeId);
+
+                if (cartItem != null)
+                {
+                    cartItem.Quantity = product.Quantity;
+                    await _localStorage.SetItemAsync("cart", cart);
+                    
+                }
+            }
         }
     }
 }
