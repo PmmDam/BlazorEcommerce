@@ -3,6 +3,7 @@ global using Microsoft.EntityFrameworkCore;
 global using BlazorEcommerce.Server.Data;
 global using BlazorEcommerce.Server.Services.ProductService;
 global using BlazorEcommerce.Server.Services.CategoryService;
+global using BlazorEcommerce.Server.Services.AuthService;
 
 using Microsoft.AspNetCore.ResponseCompression;
 using BlazorEcommerce.Server.Services.CartService;
@@ -21,6 +22,7 @@ namespace BlazorEcommerce
             builder.Services.AddDbContext<DataContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                //options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionConnection"));
             });
 
             builder.Services.AddControllersWithViews();
@@ -34,6 +36,8 @@ namespace BlazorEcommerce
             builder.Services.AddScoped<IProductService,ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
 
             var app = builder.Build();
 

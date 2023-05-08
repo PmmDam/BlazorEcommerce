@@ -16,7 +16,7 @@ namespace BlazorEcommerce.Server.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductType> ProductTypes{ get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
-
+        public DbSet<UserModel> Users{ get; set; }
 
         /// <summary>
         /// Preparamos unos datos de ejemplo para que Entity framework los inserte en la base de datos
