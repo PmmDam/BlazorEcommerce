@@ -36,7 +36,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             await _context.SaveChangesAsync();
 
             //Devolvemos la respuesta con el id del usuario
-            return new ServiceResponse<int> { Data = user.Id };
+            return new ServiceResponse<int> { Data = user.Id,Message="Registro completado!" };
         }
         public async Task<bool> UserExists(string email)
         {
