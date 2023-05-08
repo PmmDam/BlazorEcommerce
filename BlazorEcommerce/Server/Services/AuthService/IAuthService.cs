@@ -10,5 +10,13 @@
         /// <returns></returns>
         Task<ServiceResponse<int>> Register(UserModel user,string password);
         Task<bool> UserExists(string email);
+
+        /// <summary>
+        /// Login del usuario utilizando JsonWebTokens
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        Task<ServiceResponse<string>> LoginAsync(string email, string password);
     }
 }
