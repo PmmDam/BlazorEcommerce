@@ -9,9 +9,13 @@ namespace BlazorEcommerce.Server.Services.AuthService
 {
     public class AuthService : IAuthService
     {
+        //Representa a la sesion que tenemos abierta con la base de datos
         private readonly DataContext _context;
+
+        //Referencia a la configuración de la aplicación guardada en el appsettings.json
         private readonly IConfiguration _configuration;
 
+        //Constructor al que se le pasan por inyección de dependencias las propiedades anteriores
         public AuthService(DataContext context, IConfiguration configuration)
         {
             _context = context;
@@ -104,7 +108,6 @@ namespace BlazorEcommerce.Server.Services.AuthService
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
-
             var creds = new SigningCredentials(key,SecurityAlgorithms.HmacSha512Signature);
             var token = new JwtSecurityToken(
                 claims:claims,

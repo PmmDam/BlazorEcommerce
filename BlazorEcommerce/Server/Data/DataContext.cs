@@ -1,7 +1,9 @@
 ﻿
 namespace BlazorEcommerce.Server.Data
 {
-    //Representa la "sesión" con la base de datos y la utilizaremos para tirar queries de nuestras entidades
+    /// <summary>
+    /// Representa la "sesión" con la base de datos y la utilizaremos para tirar queries de nuestras entidades
+    /// </summary>
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)

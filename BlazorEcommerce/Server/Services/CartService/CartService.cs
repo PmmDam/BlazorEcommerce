@@ -11,15 +11,19 @@
 
         public async Task<ServiceResponse<List<CartProductResponseDTO>>> GetCartProductsAsync(List<CartItem> cartItems)
         {
+            //Valor de retorno.
             var result = new ServiceResponse<List<CartProductResponseDTO>>
             {
                 Data = new List<CartProductResponseDTO>()
             };
 
+            //Recorremos la lista de cartItems 
             foreach(var item in cartItems)
             {
+                //Recuperamos de la base de datos el item sobre el que estamos iterando
                 var product = await _context.Products.Where(p=>p.Id == item.ProductId).FirstOrDefaultAsync();
 
+                //Si existe el item, comprbamos y sus variants
                 if(product != null)
                 {
                     var productVariant = await _context.ProductVariants

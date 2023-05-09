@@ -1,4 +1,9 @@
-﻿<div class="dropdown">
+﻿@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+
+<div class="dropdown">
 
     <button @onclick="ToggleUserMenu"
             @onfocusout="HideUserMenu"
@@ -7,9 +12,21 @@
     </button>
 
     <div class="dropdown-menu dropdown-menu-right @UserMenuCssClass">
-        <a href="login" class="dropdown-item">LogIn</a>
-        <a href="register" class="dropdown-item">SignIn</a>
-        
+        <AuthorizeView>
+            <Authorized>
+                <button class="dropdown-item" @onclick="Logout">Logout</button>
+                
+                <a href="profile" class="dropdown-item">Perfil</a>
+            </Authorized>
+
+            <NotAuthorized>
+                <a href="login?returnUrl=@NavigationManager.ToBaseRelativePath(NavigationManager.Uri)" class="dropdown-item">LogIn</a>
+                <a href="register" class="dropdown-item">SignIn</a>
+            </NotAuthorized>
+
+
+        </AuthorizeView>
+
     </div>
 </div>
 @code {
@@ -27,4 +44,17 @@
         await Task.Delay(200);
         showUserMenu = false;
     }
+
+    private async Task Logout()
+    {
+        //Borramos el token de autenticación
+        await LocalStorage.RemoveItemAsync("authToken");
+
+        //Actualizamos el AuthenticationStateProvider pero que el usuario no esté autenticado
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        //Navegamos a la home
+        NavigationManager.NavigateTo("");
+    }
+
 }

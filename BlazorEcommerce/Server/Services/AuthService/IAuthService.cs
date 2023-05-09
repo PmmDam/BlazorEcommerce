@@ -9,6 +9,12 @@
         /// <param name="password"></param>
         /// <returns></returns>
         Task<ServiceResponse<int>> Register(UserModel user,string password);
+
+        /// <summary>
+        /// Comprobamos si el email existe en la plataforma
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         Task<bool> UserExists(string email);
 
         /// <summary>

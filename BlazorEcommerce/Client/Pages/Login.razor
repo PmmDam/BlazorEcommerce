@@ -1,14 +1,15 @@
 ﻿@page "/login"
+@using Microsoft.AspNetCore.WebUtilities;
 @inject IAuthService AuthService
 @inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Login</PageTitle>
-
-
+<h3>Login</h3>
 <EditForm Model="user" OnValidSubmit="HandleLoginAsync">
     <DataAnnotationsValidator/>
+
     <div class="mb-3">
         <label for="email">Email</label>
         <InputText id="email" @bind-Value="user.Email" class="form-control" />
@@ -19,7 +20,6 @@
         <InputText id="password" @bind-Value="user.Password" class="form-control" type="password" />
         <ValidationMessage For="@(() => user.Password)" />
     </div>
-
 
     <button type="submit" class="btn btn-primary">Login</button>
 
@@ -34,20 +34,41 @@
 
     private string errorMessage = string.Empty;
 
+    private string returnUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+        {
+            returnUrl = url;
+        }
+    }
 
 
     private async Task HandleLoginAsync()
     {
+        //Hacemos el post request para logeuar al usuario
         var result = await AuthService.Login(user);
+
+        //Si el serviceResponse ha salido bien
         if (result.Success)
         {
+            //No no hay mensaje de error
             errorMessage = string.Empty;
 
+            //Guardamos en el localStorage el token de autenticación devuelto por la API
             await LocalStorage.SetItemAsync("authToken", result.Data);
+
+            //Actualiozamos el authenticationStateProcider para que se autentique el usuario
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+
             NavigationManager.NavigateTo("");
         }
         else
         {
+            //Lanzamos el mensaje de error devuelto por la API
             errorMessage = result.Message;
         }
     }
