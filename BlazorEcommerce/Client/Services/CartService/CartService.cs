@@ -8,13 +8,15 @@ namespace BlazorEcommerce.Client.Services.CartService
     {
         private readonly ILocalStorageService _localStorage;
         private readonly HttpClient _http;
+        private readonly AuthenticationStateProvider _authStateProvider;
 
         public event Action OnChange;
 
-        public CartService(ILocalStorageService localStorage, HttpClient http)
+        public CartService(ILocalStorageService localStorage, HttpClient http,AuthenticationStateProvider authStateProvider)
         {
             _localStorage = localStorage;
             _http = http;
+            _authStateProvider = authStateProvider;
         }
 
         /// <summary>
@@ -34,8 +36,21 @@ namespace BlazorEcommerce.Client.Services.CartService
             return cart;
         }
 
+        /// <summary>
+        /// Añade un producto al carrito, si el usuario está autenticado lo cogerá de la base de datos, si no, del LocalStorage
+        /// </summary>
+        /// <param name="cartItem"></param>
+        /// <returns></returns>
         public async Task AddToCart(CartItem cartItem)
         {
+            if((await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated)
+            {
+                await Console.Out.WriteLineAsync("The user is authenticated");
+            }
+            else
+            {
+                await Console.Out.WriteLineAsync("The user is NOT authenticated");
+            }
             List<CartItem> cart = await InitializeLocalStorageAsync("cart");
             if(cart == null)
             {
@@ -110,6 +125,25 @@ namespace BlazorEcommerce.Client.Services.CartService
                     
                 }
             }
+        }
+
+        public async Task StoreCartItems(bool emptyLocalCart)
+        {
+           var localCart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+            
+            //Clausula guarda para evitar niveles de indentación y que el código quede lo más claro posible
+            if(localCart == null)
+            {
+                return;
+            }
+
+            await _http.PostAsJsonAsync("api/cart", localCart);
+
+            if (emptyLocalCart)
+            {
+                await _localStorage.RemoveItemAsync("cart");
+            }
+
         }
     }
 }

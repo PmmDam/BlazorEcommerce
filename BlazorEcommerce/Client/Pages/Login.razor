@@ -2,8 +2,11 @@
 @using Microsoft.AspNetCore.WebUtilities;
 @inject IAuthService AuthService
 @inject ILocalStorageService LocalStorage
+@inject ICartService CartService
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
+
+
 
 <PageTitle>Login</PageTitle>
 <h3>Login</h3>
@@ -60,9 +63,11 @@
             //Guardamos en el localStorage el token de autenticación devuelto por la API
             await LocalStorage.SetItemAsync("authToken", result.Data);
 
-            //Actualiozamos el authenticationStateProcider para que se autentique el usuario
+            //Actualizamos el authenticationStateProcider para que se autentique el usuario
             await AuthenticationStateProvider.GetAuthenticationStateAsync();
 
+            //Almacenamos los items que hay en el localStorage cuando nos logueamos
+            await CartService.StoreCartItems(true);
 
             NavigationManager.NavigateTo("");
         }

@@ -1,12 +1,18 @@
-﻿namespace BlazorEcommerce.Server.Services.CartService
+﻿using System.Security.Claims;
+
+namespace BlazorEcommerce.Server.Services.CartService
 {
     public class CartService : ICartService
     {
         private readonly DataContext _context;
 
-        public CartService(DataContext context)
+        //Nos permite recuperar el userId
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public CartService(DataContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<List<CartProductResponseDTO>>> GetCartProductsAsync(List<CartItem> cartItems)
@@ -51,6 +57,20 @@
                 
             }
             return result;
+        }
+
+        private int GetUserId()
+        {
+            return int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        }
+
+        public async Task<ServiceResponse<List<CartProductResponseDTO>>> StoreCartItems(List<CartItem> cartItems)
+        {
+            cartItems.ForEach(cartItem => cartItem.UserId = GetUserId());
+            _context.CartItems.AddRange(cartItems);
+            await _context.SaveChangesAsync();
+
+            return await GetCartProductsAsync(await _context.CartItems.Where(ci => ci.UserId == GetUserId()).ToListAsync());
         }
     }
 }
