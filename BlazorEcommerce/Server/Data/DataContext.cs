@@ -19,13 +19,15 @@ namespace BlazorEcommerce.Server.Data
         public DbSet<ProductType> ProductTypes{ get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
         public DbSet<UserModel> Users{ get; set; }
-
+        public DbSet<CartItem> CartItems { get; set; }
         /// <summary>
         /// Preparamos unos datos de ejemplo para que Entity framework los inserte en la base de datos
         /// </summary>
         /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CartItem>().HasKey(ci => new { ci.UserId,ci.ProductId, ci.ProductTypeId });
+
             modelBuilder.Entity<ProductVariant>().HasKey(p=> new { p.ProductId,p.ProductTypeId});
 
             modelBuilder.Entity<ProductType>().HasData(

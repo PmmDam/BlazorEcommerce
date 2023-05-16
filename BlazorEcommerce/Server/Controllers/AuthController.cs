@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BlazorEcommerce.Server.Controllers
 {
@@ -44,6 +46,25 @@ namespace BlazorEcommerce.Server.Controllers
             }
 
             return Ok(response);
+        }
+
+        //La etiqueta Auhotirize obliga al usuario a estar autorizado para navegar a esta url
+        [HttpPost("change-password"),Authorize]
+        public async Task<ActionResult<ServiceResponse<bool>>> ChangePassword([FromBody] string password)
+        {
+            //Obtenemos el user id de los Claims gracias a JWT
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var response = await _authService.ChangePassword(int.Parse(userId), password);
+
+            if (!response.Success)
+            {
+                return BadRequest(response);
+            }
+            else
+            {
+               return Ok(response);
+            }
+            
         }
 
     }

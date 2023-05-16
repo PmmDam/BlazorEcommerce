@@ -24,5 +24,7 @@
         /// <param name="password"></param>
         /// <returns></returns>
         Task<ServiceResponse<string>> LoginAsync(string email, string password);
+
+        Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword);
     }
 }

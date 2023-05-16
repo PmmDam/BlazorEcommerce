@@ -11,6 +11,7 @@ namespace BlazorEcommerce.Shared
     {
         [Required,StringLength(100,MinimumLength =6)]
         public string Password{ get; set; }=string.Empty;
+
         [Compare("Password",ErrorMessage ="Las constraseñas deben ser iguales")]
         public string ConfirmPassword { get; set; } = string.Empty;
 

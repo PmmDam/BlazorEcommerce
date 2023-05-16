@@ -7,6 +7,8 @@ global using BlazorEcommerce.Server.Services.AuthService;
 
 using Microsoft.AspNetCore.ResponseCompression;
 using BlazorEcommerce.Server.Services.CartService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlazorEcommerce
 {
@@ -33,10 +35,23 @@ namespace BlazorEcommerce
             builder.Services.AddSwaggerGen();
 
             //Inyectamos las dependencias de las clases creadas en el proyecto
-            builder.Services.AddScoped<IProductService,ProductService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            
+            //Con este servicio podremos extraer y validar el JSON Web Token para
+            //que el usuario pueda realizar operaciones como el cambio de contraseña unicamente si está autenticado y autorizado
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
 
 
             var app = builder.Build();
@@ -67,6 +82,9 @@ namespace BlazorEcommerce
 
             app.UseRouting();
 
+            
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapRazorPages();
             app.MapControllers();
