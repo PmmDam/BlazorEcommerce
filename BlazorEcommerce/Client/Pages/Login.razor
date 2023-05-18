@@ -69,6 +69,8 @@
             //Almacenamos los items que hay en el localStorage cuando nos logueamos
             await CartService.StoreCartItems(true);
 
+            await CartService.GetCartItemsCount();
+
             NavigationManager.NavigateTo("");
         }
         else

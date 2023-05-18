@@ -1,6 +1,7 @@
 ﻿@inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
+@inject ICartService CartService
 
 
 <div class="dropdown">
@@ -49,6 +50,8 @@
     {
         //Borramos el token de autenticación
         await LocalStorage.RemoveItemAsync("authToken");
+
+        await CartService.GetCartItemsCount();
 
         //Actualizamos el AuthenticationStateProvider pero que el usuario no esté autenticado
         await AuthenticationStateProvider.GetAuthenticationStateAsync();

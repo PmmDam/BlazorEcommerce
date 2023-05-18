@@ -26,5 +26,8 @@ namespace BlazorEcommerce.Shared
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal OriginalPrice { get; set; }
+
+
+       
     }
 }

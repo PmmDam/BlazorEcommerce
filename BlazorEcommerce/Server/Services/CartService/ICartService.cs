@@ -16,5 +16,16 @@
         /// <returns></returns>
         Task<ServiceResponse<List<CartProductResponseDTO>>> StoreCartItems(List<CartItem> cartItems);
 
+        /// <summary>
+        /// Recuperamos de la base de datos el total de items en la cesta de la compra para un usuario
+        /// </summary>
+        /// <returns></returns>
+        Task<ServiceResponse<int>> GetCartItemsCount();
+
+        /// <summary>
+        /// Obtiene los productos de la cesta de la base de datos
+        /// </summary>
+        /// <returns></returns>
+        Task<ServiceResponse<List<CartProductResponseDTO>>> GetDbCartProducts();
     }
 }
