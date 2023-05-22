@@ -41,5 +41,13 @@
         /// <param name="cartItem"></param>
         /// <returns></returns>
         Task<ServiceResponse<bool>> UpdateQuantity(CartItem cartItem);
+
+        /// <summary>
+        ///  Borra un item de la cesta
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="productTypeId"></param>
+        /// <returns></returns>
+        Task<ServiceResponse<bool>> RemoveItemFromCart(int productId,int productTypeId);
     }
 }

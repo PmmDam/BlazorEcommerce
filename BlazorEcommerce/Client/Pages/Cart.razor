@@ -67,10 +67,7 @@ else
             message = "La cesta está vacía.";
             
         }
-        else
-        {
-            cartProducts = await CartService.GetCartProducts();
-        }
+      
     }
 
     private async Task UpdateQuantity(ChangeEventArgs e,CartProductResponseDTO product)

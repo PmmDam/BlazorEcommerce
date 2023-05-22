@@ -103,22 +103,35 @@ namespace BlazorEcommerce.Client.Services.CartService
         }
 
 
-
+        /// <summary>
+        /// Comprobamos si el usuario está autenticado para borrarlo de base de datos y si no, lo borramos del local storage
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="productTypeId"></param>
+        /// <returns></returns>
         public async Task RemoveProductFromCart(int productId, int productTypeId)
         {
-            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if(cart != null)
+            if(await IsUserAuthenticated())
             {
-                var cartItem = cart.Find(x=>x.ProductId == productId && x.ProductTypeId == productTypeId);
-                
-                if(cartItem != null)
-                {
-                    cart.Remove(cartItem);
-                    await _localStorage.SetItemAsync("cart", cart);
-                    await GetCartItemsCount();
-                    OnChange?.Invoke();
-                } 
+                await _http.DeleteAsync($"api/cart/{productId}/{productTypeId}");
             }
+            else
+            {
+                var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+                if (cart != null)
+                {
+                    var cartItem = cart.Find(x => x.ProductId == productId && x.ProductTypeId == productTypeId);
+
+                    if (cartItem != null)
+                    {
+                        cart.Remove(cartItem);
+                        await _localStorage.SetItemAsync("cart", cart);
+
+                    }
+                }
+            }
+   
+
         }
 
 

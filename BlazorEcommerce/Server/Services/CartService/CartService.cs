@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using BlazorEcommerce.Server.Migrations;
+using BlazorEcommerce.Shared;
+using System.Security.Claims;
 
 namespace BlazorEcommerce.Server.Services.CartService
 {
@@ -100,18 +102,49 @@ namespace BlazorEcommerce.Server.Services.CartService
             return new ServiceResponse<bool> {  Data = true };
         }
 
+        private async Task<CartItem?> GetCartItemFromDb(int cartItemProductId,int cartItemProductTypeId)
+        {
+            return await _context.CartItems
+                .FirstOrDefaultAsync(ci => ci.ProductId == cartItemProductId && ci.ProductTypeId == cartItemProductTypeId&& ci.UserId == GetUserId());
+        }
+
         public async Task<ServiceResponse<bool>> UpdateQuantity(CartItem cartItem)
         {
-            var dbCartItem = await _context.CartItems
-                .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId && ci.ProductTypeId == cartItem.ProductTypeId && ci.UserId == GetUserId());
+            CartItem? dbCartItem = await GetCartItemFromDb(cartItem.ProductId,cartItem.ProductTypeId);
 
-            if(dbCartItem is null) 
+            if (dbCartItem is null)
             {
-                return new ServiceResponse<bool> { Data=false,Success = false,Message="El producto de la cesta no existe"};
+                return new ServiceResponse<bool>
+                {
+                    Data = false,
+                    Success = false,
+                    Message = "El producto de la cesta no existe"
+                };
             }
             dbCartItem.Quantity = cartItem.Quantity;
             await _context.SaveChangesAsync();
-            return new ServiceResponse<bool> { Data = true};
+            return new ServiceResponse<bool> { Data = true };
+        }
+
+    
+
+        public async Task<ServiceResponse<bool>> RemoveItemFromCart(int productId, int productTypeId)
+        {
+            CartItem? dbCartItem = await GetCartItemFromDb(productId, productTypeId);
+
+            if (dbCartItem is null)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Data = false,
+                    Success = false,
+                    Message = "El producto de la cesta no existe"
+                };
+            }
+            _context.CartItems.Remove(dbCartItem);
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<bool> {  Data = true };
         }
     }
 }
