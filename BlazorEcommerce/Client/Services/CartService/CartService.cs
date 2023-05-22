@@ -45,52 +45,60 @@ namespace BlazorEcommerce.Client.Services.CartService
         {
             if (await IsUserAuthenticated())
             {
-                await Console.Out.WriteLineAsync("The user is authenticated");
+                await _http.PostAsJsonAsync("api/cart/add", cartItem);
             }
             else
             {
-                await Console.Out.WriteLineAsync("The user is NOT authenticated");
-            }
-            List<CartItem> cart = await InitializeLocalStorageAsync("cart");
-            if (cart == null)
-            {
-                cart = new List<CartItem> { };
-            }
+                List<CartItem> cart = await InitializeLocalStorageAsync("cart");
+                if (cart == null)
+                {
+                    cart = new List<CartItem> { };
+                }
 
-            //Comprobamos si el item que queremos añadir está ya en la cesta
-            var sameItem = cart.Find(x => x.ProductId == cartItem.ProductId && x.ProductTypeId == cartItem.ProductTypeId);
+                //Comprobamos si el item que queremos añadir está ya en la cesta
+                var sameItem = cart.Find(x => x.ProductId == cartItem.ProductId && x.ProductTypeId == cartItem.ProductTypeId);
 
-            //Si sameItem no está en la cesta, será igual a null
-            if (sameItem == null)
-            {
-                cart.Add(cartItem);
-            }
-            //Si está en la cesta, incrementamos la cantidad
-            else
-            {
-                sameItem.Quantity += cartItem.Quantity;
-            }
+                //Si sameItem no está en la cesta, será igual a null
+                if (sameItem == null)
+                {
+                    cart.Add(cartItem);
+                }
+                //Si está en la cesta, incrementamos la cantidad
+                else
+                {
+                    sameItem.Quantity += cartItem.Quantity;
+                }
 
-            await _localStorage.SetItemAsync("cart", cart);
+                await _localStorage.SetItemAsync("cart", cart);
+            }
+          
             await GetCartItemsCount();
         }
 
       
-        public async Task<List<CartItem>> GetCartItems()
-        {
-            await GetCartItemsCount();
-            List<CartItem> cart = await InitializeLocalStorageAsync("cart");
-
-            return cart;
-        }
+      
 
         public async Task<List<CartProductResponseDTO>> GetCartProducts()
         {
-            var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            var response = await _http.PostAsJsonAsync("api/cart/products", cartItems);
-            var cartProducts = await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductResponseDTO>>>().ConfigureAwait(false);
+            if(await IsUserAuthenticated())
+            {
+                var response = await _http.GetFromJsonAsync<ServiceResponse<List<CartProductResponseDTO>>>("api/cart");
+                return response.Data;
+            }
+            else
+            {
+                var cartItems = await _localStorage.GetItemAsync<List<CartItem>>("cart");
 
-            return cartProducts.Data;
+                if(cartItems == null)
+                {
+                    return new List<CartProductResponseDTO>();
+                }
+                var response = await _http.PostAsJsonAsync("api/cart/products", cartItems);
+                var cartProducts = await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductResponseDTO>>>().ConfigureAwait(false);
+
+                return cartProducts.Data;
+            }
+            
 
         }
 
@@ -116,18 +124,33 @@ namespace BlazorEcommerce.Client.Services.CartService
 
         public async Task UpdateQuantity(CartProductResponseDTO product)
         {
-            var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if (cart != null)
+            //Si el usuario está autenticado, recuperamos el objeto de la base de datos
+            if(await IsUserAuthenticated())
             {
-                var cartItem = cart.Find(x => x.ProductId == product.ProductId && x.ProductTypeId == product.ProductTypeId);
-
-                if (cartItem != null)
+                var request = new CartItem
                 {
-                    cartItem.Quantity = product.Quantity;
-                    await _localStorage.SetItemAsync("cart", cart);
-                    
+                    ProductId = product.ProductId,
+                    Quantity = product.Quantity,
+                    ProductTypeId = product.ProductTypeId
+                };
+                await _http.PutAsJsonAsync("api/cart/update-quantity", request).ConfigureAwait(false);
+            }
+            else //Si no, obtenemos 
+            {
+                var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
+                if (cart != null)
+                {
+                    var cartItem = cart.Find(x => x.ProductId == product.ProductId && x.ProductTypeId == product.ProductTypeId);
+
+                    if (cartItem != null)
+                    {
+                        cartItem.Quantity = product.Quantity;
+                        await _localStorage.SetItemAsync("cart", cart);
+
+                    }
                 }
             }
+         
         }
 
         public async Task StoreCartItems(bool emptyLocalCart)

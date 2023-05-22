@@ -27,5 +27,19 @@
         /// </summary>
         /// <returns></returns>
         Task<ServiceResponse<List<CartProductResponseDTO>>> GetDbCartProducts();
+
+        /// <summary>
+        /// Añade los productos de la cesta a la base de datos
+        /// </summary>
+        /// <param name="cartItem"></param>
+        /// <returns></returns>
+        Task<ServiceResponse<bool>> AddToCart(CartItem cartItem);
+        
+        /// <summary>
+        /// Actualiza la cantidad del item
+        /// </summary>
+        /// <param name="cartItem"></param>
+        /// <returns></returns>
+        Task<ServiceResponse<bool>> UpdateQuantity(CartItem cartItem);
     }
 }
