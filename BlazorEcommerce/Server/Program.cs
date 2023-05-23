@@ -4,11 +4,14 @@ global using BlazorEcommerce.Server.Data;
 global using BlazorEcommerce.Server.Services.ProductService;
 global using BlazorEcommerce.Server.Services.CategoryService;
 global using BlazorEcommerce.Server.Services.AuthService;
+global using BlazorEcommerce.Server.Services.CartService;
+global using BlazorEcommerce.Server.Services.OrderService;
 
 using Microsoft.AspNetCore.ResponseCompression;
 using BlazorEcommerce.Server.Services.CartService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+
 
 namespace BlazorEcommerce
 {
@@ -34,12 +37,13 @@ namespace BlazorEcommerce
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //Inyectamos las dependencias de las clases creadas en el proyecto
+            //Inyectamos las dependencias de los servicios creados en el proyecto
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
-            
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
             //Con este servicio podremos extraer y validar el JSON Web Token para
             //que el usuario pueda realizar operaciones como el cambio de contraseña unicamente si está autenticado y autorizado
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

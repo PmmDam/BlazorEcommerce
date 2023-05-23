@@ -1,5 +1,6 @@
 ﻿@page "/cart"
 @inject ICartService CartService
+@inject IOrderService OrderService
 
 
 <PageTitle>Cesta de la compra</PageTitle>
@@ -9,6 +10,10 @@
 @if (cartProducts == null || cartProducts.Count == 0)
 {
     <span>@message</span>
+}
+else if (orderPlaced)
+{
+    <span>¡Gracias por el pedido! Puedes ver tus pedidos <a href="orders"> aquí</a></span>
 }
 else
 {
@@ -23,11 +28,11 @@ else
                     <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
                     <span>@product.ProductType</span><br />
                     <button class="btn-delete" @onclick="@(()=> RemoveProductFromCart(product.ProductId,product.ProductTypeId))">Borrar producto</button>
-                    <input class="form-control input-quantity" type="number" value=@product.Quantity @onchange="@((ChangeEventArgs e) => UpdateQuantity(e,product))" min="1"/>
+                    <input class="form-control input-quantity" type="number" value=@product.Quantity @onchange="@((ChangeEventArgs e) => UpdateQuantity(e,product))" min="1" />
                 </div>
-               
+
                 <div class="cart-product-price">
-                    @(product.Price*product.Quantity)€
+                    @(product.Price * product.Quantity)€
                 </div>
             </div>
         }
@@ -35,7 +40,7 @@ else
             Total (@cartProducts.Count): @cartProducts.Sum(product => @product.Price*product.Quantity)€
         </div>
     </div>
-
+    <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Realizar pedido</button>
 }
 
 
@@ -43,15 +48,17 @@ else
 @code {
     List<CartProductResponseDTO> cartProducts = null;
     string message = "Cargando productos...";
+    bool orderPlaced = false;
 
 
     protected override async Task OnInitializedAsync()
     {
+        orderPlaced = false;
         await LoadCart();
 
     }
 
-    private async Task RemoveProductFromCart(int productId,int productTypeId)
+    private async Task RemoveProductFromCart(int productId, int productTypeId)
     {
         await CartService.RemoveProductFromCart(productId, productTypeId);
         await LoadCart();
@@ -65,18 +72,25 @@ else
         if (cartProducts == null || cartProducts.Count == 0)
         {
             message = "La cesta está vacía.";
-            
+
         }
-      
+
     }
 
-    private async Task UpdateQuantity(ChangeEventArgs e,CartProductResponseDTO product)
+    private async Task UpdateQuantity(ChangeEventArgs e, CartProductResponseDTO product)
     {
         product.Quantity = int.Parse(e.Value.ToString());
-        if(product.Quantity < 1)
+        if (product.Quantity < 1)
         {
             product.Quantity = 1;
         }
         await CartService.UpdateQuantity(product);
+    }
+
+    private async Task PlaceOrder()
+    {
+        await OrderService.PlaceOrder();
+        await CartService.GetCartItemsCount();
+        orderPlaced = true;
     }
 }

@@ -43,7 +43,7 @@ namespace BlazorEcommerce.Client.Services.CartService
         /// <returns></returns>
         public async Task AddToCart(CartItem cartItem)
         {
-            if (await IsUserAuthenticated())
+            if (await IsUserAuthenticatedAsync())
             {
                 await _http.PostAsJsonAsync("api/cart/add", cartItem);
             }
@@ -80,7 +80,7 @@ namespace BlazorEcommerce.Client.Services.CartService
 
         public async Task<List<CartProductResponseDTO>> GetCartProducts()
         {
-            if(await IsUserAuthenticated())
+            if(await IsUserAuthenticatedAsync())
             {
                 var response = await _http.GetFromJsonAsync<ServiceResponse<List<CartProductResponseDTO>>>("api/cart");
                 return response.Data;
@@ -111,7 +111,7 @@ namespace BlazorEcommerce.Client.Services.CartService
         /// <returns></returns>
         public async Task RemoveProductFromCart(int productId, int productTypeId)
         {
-            if(await IsUserAuthenticated())
+            if(await IsUserAuthenticatedAsync())
             {
                 await _http.DeleteAsync($"api/cart/{productId}/{productTypeId}");
             }
@@ -138,7 +138,7 @@ namespace BlazorEcommerce.Client.Services.CartService
         public async Task UpdateQuantity(CartProductResponseDTO product)
         {
             //Si el usuario está autenticado, recuperamos el objeto de la base de datos
-            if(await IsUserAuthenticated())
+            if(await IsUserAuthenticatedAsync())
             {
                 var request = new CartItem
                 {
@@ -188,14 +188,14 @@ namespace BlazorEcommerce.Client.Services.CartService
         /// Método que comprueba si el usuario está autenticado
         /// </summary>
         /// <returns></returns>
-        private async Task<bool> IsUserAuthenticated()
+        private async Task<bool> IsUserAuthenticatedAsync()
         {
             return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
         }
 
         public async Task GetCartItemsCount()
         {
-            if(await IsUserAuthenticated())
+            if(await IsUserAuthenticatedAsync())
             {
                 var result = await _http.GetFromJsonAsync<ServiceResponse<int>>("api/cart/count");
                 var count = result.Data;
