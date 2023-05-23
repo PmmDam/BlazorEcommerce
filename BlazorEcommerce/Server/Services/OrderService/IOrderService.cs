@@ -8,6 +8,6 @@
         /// <returns></returns>
         Task<ServiceResponse<bool>> PlaceOrder();
 
-        Task<ServiceResponse<List<OrderOverviewResponseDTO>>>
+        Task<ServiceResponse<List<OrderOverviewResponseDTO>>> GetOrders();
     }
 }
