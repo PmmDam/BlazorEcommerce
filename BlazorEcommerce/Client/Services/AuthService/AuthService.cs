@@ -5,10 +5,12 @@ namespace BlazorEcommerce.Client.Services.AuthService
     public class AuthService : IAuthService
     {
         private readonly HttpClient _http;
+        private readonly AuthenticationStateProvider _authStateProvider;
 
-        public AuthService(HttpClient http)
+        public AuthService(HttpClient http,AuthenticationStateProvider authStateProvider)
         {
             _http = http;
+            _authStateProvider = authStateProvider;
         }
 
         public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request)
@@ -17,9 +19,9 @@ namespace BlazorEcommerce.Client.Services.AuthService
             return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
 
-        public int GetUserId()
+        public async Task<bool> IsUserAuthenticated()
         {
-            throw new NotImplementedException();
+            return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
         }
 
         public async Task<ServiceResponse<string>> Login(UserLogin request)

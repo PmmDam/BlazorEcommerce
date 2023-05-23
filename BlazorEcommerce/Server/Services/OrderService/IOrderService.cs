@@ -19,6 +19,6 @@
         /// </summary>
         /// <param name="orderId"></param>
         /// <returns></returns>
-        Task<ServiceResponse<List<OrderDetailsResponseDTO>>> GetOrderDetails(int orderId);
+        Task<ServiceResponse<OrderDetailsResponseDTO>> GetOrderDetails(int orderId);
     }
 }
