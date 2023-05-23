@@ -8,6 +8,17 @@
         /// <returns></returns>
         Task<ServiceResponse<bool>> PlaceOrder();
 
+        /// <summary>
+        /// Obtiene todos los pedidos del usuario
+        /// </summary>
+        /// <returns></returns>
         Task<ServiceResponse<List<OrderOverviewResponseDTO>>> GetOrders();
+
+        /// <summary>
+        /// Obtiene los detalles de los productos de un pedido
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        Task<ServiceResponse<List<OrderDetailsResponseDTO>>> GetOrderDetails(int orderId);
     }
 }
