@@ -6,8 +6,11 @@ namespace BlazorEcommerce.Client.Services.CartService
 {
     public class CartService : ICartService
     {
+        //Referencia al localStorage del navegador donde almacenamos temporalmente el carrito en caso de que el usuario no esté logueado
         private readonly ILocalStorageService _localStorage;
+
         private readonly HttpClient _http;
+        
         private readonly IAuthService _authService;
         
         public event Action OnChange;
