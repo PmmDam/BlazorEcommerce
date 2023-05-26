@@ -6,7 +6,7 @@
         /// Realiza el pedido
         /// </summary>
         /// <returns></returns>
-        Task PlaceOrder();
+        Task<string> PlaceOrder();
 
         /// <summary>
         /// Obitene todos los pedidos 

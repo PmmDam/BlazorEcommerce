@@ -1,7 +1,7 @@
 ﻿@page "/cart"
 @inject ICartService CartService
 @inject IOrderService OrderService
-
+@inject NavigationManager NavigationManager
 
 <PageTitle>Cesta de la compra</PageTitle>
 
@@ -89,8 +89,7 @@ else
 
     private async Task PlaceOrder()
     {
-        await OrderService.PlaceOrder();
-        await CartService.GetCartItemsCount();
-        orderPlaced = true;
+        string url = await OrderService.PlaceOrder();
+        NavigationManager.NavigateTo(url);
     }
 }

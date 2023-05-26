@@ -6,9 +6,9 @@ global using BlazorEcommerce.Server.Services.CategoryService;
 global using BlazorEcommerce.Server.Services.AuthService;
 global using BlazorEcommerce.Server.Services.CartService;
 global using BlazorEcommerce.Server.Services.OrderService;
+global using BlazorEcommerce.Server.Services.PaymentService;
 
 using Microsoft.AspNetCore.ResponseCompression;
-using BlazorEcommerce.Server.Services.CartService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -43,6 +43,7 @@ namespace BlazorEcommerce
             builder.Services.AddScoped<ICartService, CartService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             //Con este servicio podremos extraer y validar el JSON Web Token para
             //que el usuario pueda realizar operaciones como el cambio de contraseña unicamente si está autenticado y autorizado
