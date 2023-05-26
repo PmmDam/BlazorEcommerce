@@ -23,10 +23,10 @@
         Task<ServiceResponse<int>> GetCartItemsCount();
 
         /// <summary>
-        /// Obtiene los productos de la cesta de la base de datos
+        /// Obtiene los productos de la cesta de la base de datos en función del id del usuario. Por defecto su valor es nullo 
         /// </summary>
         /// <returns></returns>
-        Task<ServiceResponse<List<CartProductResponseDTO>>> GetDbCartProducts();
+        Task<ServiceResponse<List<CartProductResponseDTO>>> GetDbCartProducts(int? userId =null);
 
         /// <summary>
         /// Añade los productos de la cesta a la base de datos

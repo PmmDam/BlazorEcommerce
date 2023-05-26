@@ -29,6 +29,7 @@
 
         int GetUserId();
         string GetUserEmail();
+        Task<UserModel> GetUserByEmail(string email);
 
     }
 }

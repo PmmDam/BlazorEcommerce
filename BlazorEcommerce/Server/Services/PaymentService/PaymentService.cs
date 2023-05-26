@@ -9,6 +9,9 @@ namespace BlazorEcommerce.Server.Services.PaymentService
         private readonly IAuthService _authService;
         private readonly ICartService _cartService;
 
+        //Key para utilizar el webhook que nos comunicará si el pago de stripe ha ido bien
+        const string secretWebhookKey = "whsec_fe41c9afa6c0823c2d901c8fdc16701fb0ba0a09b7b878e127a6a6ff80bd1ebf";
+
         public PaymentService(IOrderService orderService, IAuthService authService, ICartService cartService)
         {
 
@@ -48,6 +51,10 @@ namespace BlazorEcommerce.Server.Services.PaymentService
 
                 //Obtenemos el email de nuestro servicio de autenticación
                 CustomerEmail = _authService.GetUserEmail(),
+                ShippingAddressCollection = new SessionShippingAddressCollectionOptions
+                {
+                    AllowedCountries = new List<string> { "ES", "FR","DK","DE"}
+                },
 
                 //Creamos una lista de strings por si añadiera más métodos de pago
                 PaymentMethodTypes = new List<string>
@@ -63,6 +70,31 @@ namespace BlazorEcommerce.Server.Services.PaymentService
             var service = new SessionService();
             Session session = service.Create(options);
             return session;
+        }
+
+        public async Task<ServiceResponse<bool>> FulfillOrder(HttpRequest request)
+        {
+            var json = await new StreamReader(request.Body).ReadToEndAsync();
+            try
+            {
+                var stripeEvent = EventUtility.ConstructEvent(json, request.Headers["Stripe-Signature"], secretWebhookKey);
+
+                if(stripeEvent.Type == Events.CheckoutSessionCompleted)
+                {
+                    var session = stripeEvent.Data.Object as Session;
+                    var user = await _authService.GetUserByEmail(session.CustomerEmail);
+                    await _orderService.PlaceOrder(user.Id);
+                }
+                return new ServiceResponse<bool> { Data = true };
+            }
+            catch (StripeException ex)
+            {
+                return new ServiceResponse<bool> { Data = false,Success=false,Message=ex.Message };
+            }
+            finally
+            {
+                
+            }
         }
     }
 }

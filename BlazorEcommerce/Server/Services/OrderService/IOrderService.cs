@@ -6,7 +6,7 @@
         /// Obtiene los productos de la orden almacenados en la db, calculamos el precio total y crea los OrderItems y lo amacena en la base de datos
         /// </summary>
         /// <returns></returns>
-        Task<ServiceResponse<bool>> PlaceOrder();
+        Task<ServiceResponse<bool>> PlaceOrder(int userId);
 
         /// <summary>
         /// Obtiene todos los pedidos del usuario

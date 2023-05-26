@@ -88,10 +88,10 @@ namespace BlazorEcommerce.Server.Services.OrderService
             return response;
         }
 
-        public async Task<ServiceResponse<bool>> PlaceOrder()
+        public async Task<ServiceResponse<bool>> PlaceOrder(int userId)
         {
             //Obtiene los productos del carrito
-            var products = (await _cartService.GetDbCartProducts()).Data;
+            var products = (await _cartService.GetDbCartProducts(userId)).Data;
 
             //Precio total del pedido
             decimal totalPrice = 0;
@@ -112,7 +112,7 @@ namespace BlazorEcommerce.Server.Services.OrderService
             //Creamos el pedido
             var order = new Order
             {
-                UserId = _authService.GetUserId(),
+                UserId = userId,
                 OrderDate = DateTime.UtcNow,
                 TotalPrice = totalPrice,
                 OrderItems = orderItems
@@ -122,7 +122,7 @@ namespace BlazorEcommerce.Server.Services.OrderService
             _context.Orders.Add(order);
 
             //Vaciamos el carrito
-            _context.CartItems.RemoveRange(_context.CartItems.Where(ci => ci.UserId == _authService.GetUserId()));
+            _context.CartItems.RemoveRange(_context.CartItems.Where(ci => ci.UserId ==userId));
 
             //Guardamos los cambios
             await _context.SaveChangesAsync();

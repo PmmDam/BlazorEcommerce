@@ -11,10 +11,7 @@
 {
     <span>@message</span>
 }
-else if (orderPlaced)
-{
-    <span>¡Gracias por el pedido! Puedes ver tus pedidos <a href="orders"> aquí</a></span>
-}
+
 else
 {
     <div>
@@ -48,12 +45,10 @@ else
 @code {
     List<CartProductResponseDTO> cartProducts = null;
     string message = "Cargando productos...";
-    bool orderPlaced = false;
 
 
     protected override async Task OnInitializedAsync()
     {
-        orderPlaced = false;
         await LoadCart();
 
     }
