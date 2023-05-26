@@ -50,7 +50,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             return response;
         }
 
-        public async Task<ServiceResponse<int>> Register(UserModel user, string password)
+        public async Task<ServiceResponse<int>> Register(User user, string password)
         {
             //Clausula guarda
             if (await UserExists(user.Email))
@@ -101,7 +101,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             }
         }
 
-        private string CreateToken(UserModel user)
+        private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -153,7 +153,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         }
 
-        public async Task<UserModel> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }

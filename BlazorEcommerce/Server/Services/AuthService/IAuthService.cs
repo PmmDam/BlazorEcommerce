@@ -8,7 +8,7 @@
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        Task<ServiceResponse<int>> Register(UserModel user,string password);
+        Task<ServiceResponse<int>> Register(User user,string password);
 
         /// <summary>
         /// Comprobamos si el email existe en la plataforma
@@ -29,7 +29,7 @@
 
         int GetUserId();
         string GetUserEmail();
-        Task<UserModel> GetUserByEmail(string email);
+        Task<User> GetUserByEmail(string email);
 
     }
 }
