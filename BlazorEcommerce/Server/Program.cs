@@ -11,7 +11,7 @@ global using BlazorEcommerce.Server.Services.PaymentService;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-
+using BlazorEcommerce.Server.Services.AddressService;
 
 namespace BlazorEcommerce
 {
@@ -44,6 +44,9 @@ namespace BlazorEcommerce
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IAddressService, AddressService>();
+
+
 
             //Con este servicio podremos extraer y validar el JSON Web Token para
             //que el usuario pueda realizar operaciones como el cambio de contraseña unicamente si está autenticado y autorizado
