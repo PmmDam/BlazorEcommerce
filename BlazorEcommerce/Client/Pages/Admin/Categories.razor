@@ -1,0 +1,11 @@
+﻿@*Url de la página*@
+@page "/admin/categories"
+
+@*Definimos que el usuario tiene que estar autenticado y autorizado con el role admin para ver esta página*@
+@attribute [Authorize(Roles ="Admin")]
+
+<h3>Categorías</h3>
+
+@code {
+
+}
