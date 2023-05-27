@@ -91,10 +91,7 @@ namespace BlazorEcommerce.Server.Services.PaymentService
             {
                 return new ServiceResponse<bool> { Data = false,Success=false,Message=ex.Message };
             }
-            finally
-            {
-                
-            }
+        
         }
     }
 }

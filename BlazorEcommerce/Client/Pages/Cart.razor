@@ -1,6 +1,7 @@
 ﻿@page "/cart"
 @inject ICartService CartService
 @inject IOrderService OrderService
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Cesta de la compra</PageTitle>
@@ -37,6 +38,13 @@ else
             Total (@cartProducts.Count): @cartProducts.Sum(product => @product.Price*product.Quantity)€
         </div>
     </div>
+    @if (isUserAuthenticated)
+    {
+        <div>
+            <h5>Dirección de envío</h5>
+            <AddressForm></AddressForm>
+        </div>
+    }
     <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Realizar pedido</button>
 }
 
@@ -46,9 +54,14 @@ else
     List<CartProductResponseDTO> cartProducts = null;
     string message = "Cargando productos...";
 
+    //Flag para comprobar si el usuario está autenticado y así poder enseñar el EditForm o no. 
+    //Esto debemos hacerlo así ya que no podemos ejecutar directamente el método en el html a pelo,
+    //lo ejecutamos en el OnInitializeAsync y en función del resultado actualizamos el flag
+    bool isUserAuthenticated = false;
 
     protected override async Task OnInitializedAsync()
     {
+        isUserAuthenticated = await AuthService.IsUserAuthenticated();
         await LoadCart();
 
     }

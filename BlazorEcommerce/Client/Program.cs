@@ -28,7 +28,7 @@ namespace BlazorEcommerce.Client
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            //Añadimos las implementaciones concretas a las interfaces correspondientes en el contenedor de dependencias
+            //registramos las implementaciones concretas a las interfaces correspondientes en el contenedor de dependencias
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<ICartService, CartService>();
