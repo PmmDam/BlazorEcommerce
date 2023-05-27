@@ -27,10 +27,10 @@ namespace BlazorEcommerce.Server.Controllers
             var result = await _categoryService.GetAdminCategoriesAsync();
             return Ok(result);
         }
-        [HttpDelete("admin"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ServiceResponse<List<Category>>>> DeleteCategory(int id)
+        [HttpDelete("admin/{categoryId}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<List<Category>>>> DeleteCategory(int categoryId)
         {
-            var result = await _categoryService.DeleteCategoryAsync(id);
+            var result = await _categoryService.DeleteCategoryAsync(categoryId);
             return Ok(result);
         }
 
