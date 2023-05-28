@@ -1,7 +1,9 @@
+//Persistence
 global using BlazorEcommerce.Shared;
 global using Microsoft.EntityFrameworkCore;
 global using BlazorEcommerce.Server.Data;
 
+//Services 
 global using BlazorEcommerce.Server.Services.ProductService;
 global using BlazorEcommerce.Server.Services.CategoryService;
 global using BlazorEcommerce.Server.Services.AuthService;
@@ -9,7 +11,9 @@ global using BlazorEcommerce.Server.Services.CartService;
 global using BlazorEcommerce.Server.Services.OrderService;
 global using BlazorEcommerce.Server.Services.PaymentService;
 global using BlazorEcommerce.Server.Services.AddressService;
+global using BlazorEcommerce.Server.Services.ProductTypeService;
 
+//Nuget Packages 
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +51,7 @@ namespace BlazorEcommerce
             builder.Services.AddScoped<IOrderService, OrderService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IAddressService, AddressService>();
+            builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 
 
 
