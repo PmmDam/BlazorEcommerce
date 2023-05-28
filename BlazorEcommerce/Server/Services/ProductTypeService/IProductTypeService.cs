@@ -2,6 +2,6 @@
 {
     public interface IProductTypeService
     {
-        Task<ServiceResponse<List<ProductType>>> GetPRoductTypesAsync();
+        Task<ServiceResponse<List<ProductType>>> GetProductTypesAsync();
     }
 }

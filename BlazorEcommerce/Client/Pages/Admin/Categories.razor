@@ -13,6 +13,8 @@
 
 <h3>Categorías</h3>
 
+@*Columnas de la página (Pordía haber hecho un <table></table> propiamente dicho pero estamos a 28/05, voy rápido)*@
+
 <div class="header">
     <div class="col">Nombre</div>
     <div class="col">Url</div>
@@ -25,15 +27,23 @@
     {
         <EditForm Model="currentCategory" OnSubmit="UpdateCategory">
             <div class="row">
+
+                @*Nombre de la categoría*@
                 <div class ="col">
                     <InputText @bind-Value = "currentCategory.Name" class="form-control"></InputText>
                 </div>
+
+                @*Url de la categoría*@
                 <div class="col">
                     <InputText @bind-Value="currentCategory.Url" class="form-control"></InputText>
                 </div>
+
+                @*Checkbox para delimitar si la categoría es visible o no*@
                 <div class="col col-visible">
                     <InputCheckbox @bind-Value="currentCategory.Visible" class="big-checkbox"></InputCheckbox>
                 </div>
+
+                @*Botones*@
                 <div class="col">
                     <button type="submit" class="btn btn-primary">
                         <i class="oi oi-cloud-upload"></i>
@@ -60,6 +70,8 @@
             <div class="col col-visible">
                 <span>@(category.Visible ? "🗸" : "😔")</span>
             </div>
+
+            @*Botones*@
             <div class="col">
                 <button class="btn btn-primary" @onclick="(()=>EditCategory(category))">
                     <i class="oi oi-pencil"></i>

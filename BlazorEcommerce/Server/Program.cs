@@ -53,8 +53,6 @@ namespace BlazorEcommerce
             builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 
-
-
             //Con este servicio podremos extraer y validar el JSON Web Token para
             //que el usuario pueda realizar operaciones como el cambio de contraseña unicamente si está autenticado y autorizado
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>

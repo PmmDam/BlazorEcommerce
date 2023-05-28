@@ -14,7 +14,7 @@
             //Obtenemos todos los tipos de producto de la base de datos
             var productTypes = await _context.ProductTypes.ToListAsync();
 
-            //Devolvemos un ServiceResponse con los productos
+            //Devolvemos un ServiceResponse con los tipos de productos 
             return new ServiceResponse<List<ProductType>> { Data = productTypes };
         }
     }
