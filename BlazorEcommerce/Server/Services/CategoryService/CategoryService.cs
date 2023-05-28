@@ -75,7 +75,7 @@
 
         public async Task<ServiceResponse<List<Category>>> GetAdminCategoriesAsync()
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _context.Categories.Where(category => !category.Deleted).ToListAsync();
             return new ServiceResponse<List<Category>>()
             {
                 Data = categories
@@ -104,6 +104,7 @@
             dbCategory.Visible = category.Visible;
 
             await _context.SaveChangesAsync();
+
             return await GetAdminCategoriesAsync();
         }
     }

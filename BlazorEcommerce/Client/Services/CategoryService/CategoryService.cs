@@ -31,6 +31,11 @@ namespace BlazorEcommerce.Client.Services.CategoryService
             OnChange.Invoke();
         }
 
+        /// <summary>
+        /// Crea una nueva categoría añadiendola al repository correspondiente haciendo que se genere el ID 
+        /// y podamos trabajar con esta categoría desde el cliente
+        /// </summary>
+        /// <returns></returns>
         public Category CreateNewCategory()
         {
             var newCategory = new Category()
