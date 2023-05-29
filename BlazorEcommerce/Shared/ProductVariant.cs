@@ -27,7 +27,16 @@ namespace BlazorEcommerce.Shared
         [Column(TypeName = "decimal(18,2)")]
         public decimal OriginalPrice { get; set; }
 
+        //Flags para el panel de administracion
+        public bool Visible { get; set; } = true;
+        public bool Deleted { get; set; } = false;
 
-       
+        //Estas flags no son necesarias en la base de datos para el panel de administración.
+        //es más fácil tenerlo aquí centralizado
+        [NotMapped]
+        public bool Editing { get; set; } = false;
+        [NotMapped]
+        public bool IsNew { get; set; } = false;
+
     }
 }
