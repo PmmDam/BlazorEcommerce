@@ -201,5 +201,88 @@ namespace BlazorEcommerce.Server.Services.ProductService
 
             return response;
         }
+
+        public async Task<ServiceResponse<Product>> CreateProduct(Product product)
+        {
+            foreach(var variant in product.Variants)
+            {
+                //Si no lo dejamos a null, Entity framework intentará crear de nuevo el variant y podría duplicarnos registros
+                variant.ProductType = null;
+            }
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<Product> { Data = product };
+        }
+
+        /// <summary>
+        /// Actualiza un producto 
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        public async Task<ServiceResponse<Product>> UpdateProduct(Product product)
+        {
+            //Buscamos el producto en la base de datos
+            var dbProduct = await _context.Products.FindAsync(product.Id);
+            if (dbProduct is null)
+            {
+                return new ServiceResponse<Product>
+                {
+                    Success = false,
+                    Message = "Producto no encontrado"
+                };
+            }
+            //Si lo encontramos, actuallizamos sus propiedades
+            dbProduct.Title = product.Title;
+            dbProduct.Description = product.Description;
+            dbProduct.ImageUrl = product.ImageUrl;
+            dbProduct.CategoryId = product.CategoryId;
+            dbProduct.Visible = product.Visible;
+
+            //Y actualizamos tambien cada uno de sus variantes si las tuviera
+            foreach (var variant in product.Variants)
+            {
+                //Recuperamos la variante actual de la base de datos
+                var dbVariant = await _context.ProductVariants
+                    .SingleOrDefaultAsync(variant => variant.ProductId == variant.ProductId && variant.ProductTypeId == variant.ProductTypeId);
+                //Si no existe, la añadimos directamente pero antes poniendo el productType a null para que entity framework no nos duplique registros
+                if(dbVariant is null)
+                {
+                    variant.ProductType = null;
+                    _context.ProductVariants.Add(variant);
+                }
+                //En caso contrario, actualizamos las propiedades de la varienta en la base de datos
+                else
+                {
+                    dbVariant.ProductTypeId = variant.ProductTypeId;
+                    dbVariant.Price = variant.Price;
+                    dbVariant.OriginalPrice = variant.OriginalPrice;
+                    dbVariant.Visible = variant.Visible;
+                    dbVariant.Deleted = variant.Deleted;
+                }
+            }
+
+            //Commiteamos los cambios
+            await _context.SaveChangesAsync();
+
+            //Devolvemos una respuesta con el producto actualizado 
+            return new ServiceResponse<Product> { Data = dbProduct };
+        }
+
+        public async Task<ServiceResponse<bool>> DeleteProduct(int productId)
+        {
+            var dbProduct = await _context.Products.FindAsync(productId);
+            if (dbProduct is null)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Success = false,
+                    Data = false,
+                    Message = "Producto no encontrado"
+                };
+            }
+            dbProduct.Deleted = true;
+            return new ServiceResponse<bool> {  Data = true};
+        }
     }
 }

@@ -49,5 +49,9 @@
         /// <returns></returns>
         Task<ServiceResponse<List<Product>>> GetAdminProductsAsync();
 
+        Task<ServiceResponse<Product>> CreateProduct(Product product);
+        Task<ServiceResponse<Product>> UpdateProduct(Product product);
+        Task<ServiceResponse<bool>> DeleteProduct(int productId);
+
     }
 }
