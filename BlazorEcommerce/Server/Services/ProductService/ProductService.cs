@@ -13,14 +13,18 @@ namespace BlazorEcommerce.Server.Services.ProductService
         }
 
         /// <summary>
-        /// Devuelve una lista con todos los productos y sus variants
+        /// Devuelve una lista con todos los productos y sus variants que sean visibles y no estén en el estado "borrado"
         /// </summary>
         /// <returns></returns>
         public async Task<ServiceResponse<List<Product>>> GetProductsAsync()
         {
             var response = new ServiceResponse<List<Product>>
             {
-                Data = await _context.Products.Include(p=>p.Variants).ToListAsync()
+                Data = await _context.Products
+                .Where(product => product.Visible && !product.Deleted)
+                .Include(product => product.Variants
+                                    .Where(variant => variant.Visible && !variant.Deleted))
+                .ToListAsync()
             };
             return response;
         }
@@ -34,9 +38,9 @@ namespace BlazorEcommerce.Server.Services.ProductService
         {
             var response = new ServiceResponse<Product>();
             var product = await _context.Products
-                .Include(p => p.Variants)
+                .Include(p => p.Variants.Where(variant => variant.Visible && !variant.Deleted))
                 .ThenInclude(v => v.ProductType)
-                .FirstOrDefaultAsync(p=>p.Id == productId);
+                .FirstOrDefaultAsync(product => product.Id == productId && !product.Deleted && product.Visible);
 
             if (product == null)
             {
@@ -58,7 +62,11 @@ namespace BlazorEcommerce.Server.Services.ProductService
         {
             var response = new ServiceResponse<List<Product>>
             {
-                Data = await _context.Products.Where(p => p.Category.Url.ToLower().Equals(categoryUrl.ToLower())).Include(p => p.Variants).ToListAsync()
+                Data = await _context.Products
+                .Where(product => product.Category.Url.ToLower().Equals(categoryUrl.ToLower()) && product.Visible && !product.Deleted)
+                .Include(product => product.Variants
+                                .Where(variant => variant.Visible && !variant.Deleted))
+                .ToListAsync()
             };
             return response;
         }
@@ -71,9 +79,9 @@ namespace BlazorEcommerce.Server.Services.ProductService
         private async Task<List<Product>> FindProductBySearchTextAsync(string searchText)
         {
             return await _context.Products
-                            .Where(p => p.Title.ToLower().Contains(searchText.ToLower()) ||
-                            p.Description.ToLower().Contains(searchText.ToLower()))
-                            .Include(P => P.Variants)
+                            .Where(product => product.Title.ToLower().Contains(searchText.ToLower()) ||
+                            product.Description.ToLower().Contains(searchText.ToLower()) && product.Visible && !product.Deleted)
+                            .Include(P => P.Variants.Where(variant => variant.Visible && !variant.Deleted))
                             .ToListAsync();
         }
         /// <summary>
@@ -81,17 +89,17 @@ namespace BlazorEcommerce.Server.Services.ProductService
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<ProductSearchResultDTO>> SearchProductsAsync(string searchText,int page)
+        public async Task<ServiceResponse<ProductSearchResultDTO>> SearchProductsAsync(string searchText, int page)
         {
 
             var pageResults = 2f;
             var pageCount = Math.Ceiling((await FindProductBySearchTextAsync(searchText)).Count / pageResults);
 
             var products = await _context.Products
-                            .Where(p => p.Title.ToLower().Contains(searchText.ToLower()) ||
-                            p.Description.ToLower().Contains(searchText.ToLower()))
-                            .Include(P => P.Variants)
-                            .Skip((page-1)*(int)pageResults)
+                            .Where(product => product.Title.ToLower().Contains(searchText.ToLower()) ||
+                            product.Description.ToLower().Contains(searchText.ToLower()) && product.Visible && !product.Deleted)
+                            .Include(product => product.Variants.Where(variant => variant.Visible && !variant.Deleted))
+                            .Skip((page - 1) * (int)pageResults)
                             .Take((int)pageResults)
                             .ToListAsync();
 
@@ -107,7 +115,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
             };
             return response;
         }
-   
+
         /// <summary>
         /// Devuelve un ServiceResponse con una lista de titulos de productos como sugerencias en función del parámetro de búsqueda.
         /// No solo sugiere una lista de titulos, tambien comprueba si la descripción contiene las palabras que estás introduciendo y te lo sugiere también.
@@ -117,10 +125,10 @@ namespace BlazorEcommerce.Server.Services.ProductService
         /// <returns></returns>
         public async Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText)
         {
-            var products =  await FindProductBySearchTextAsync(searchText);
-            
+            var products = await FindProductBySearchTextAsync(searchText);
+
             List<string> result = new List<string>();
-            
+
             foreach (var product in products)
             {
                 //Comprobamps si el titulo del producto contiene el searchText para añadirlo a la lista de sugerencias
@@ -144,20 +152,24 @@ namespace BlazorEcommerce.Server.Services.ProductService
                     }
                 }
             }
-            
-            return new ServiceResponse<List<string>> { Data = result};
+
+            return new ServiceResponse<List<string>> { Data = result };
         }
 
         public async Task<ServiceResponse<List<Product>>> GetFeaturedProductsAsync()
         {
             var response = new ServiceResponse<List<Product>>()
             {
-                Data = await _context.Products.Where(p => p.Featured).Include(p => p.Variants).ToListAsync()
+                Data = await _context.Products
+                .Where(product => product.Featured && product.Visible && !product.Deleted)
+                .Include(product => product.Variants.
+                                    Where(variant => variant.Visible && !variant.Deleted))
+                .ToListAsync()
             };
-        
+
             return response;
         }
 
-     
+
     }
 }
