@@ -8,9 +8,13 @@
         event Action ProductsChanged;
         
         /// <summary>
-        /// Lista de productos en memoria
+        /// Lista con los productos que puede ver un usuario normal
         /// </summary>
         List<Product> Products { get; set; }
+        /// <summary>
+        /// Lista con todos los productos
+        /// </summary>
+        List<Product> AdminProducts { get; set; }
 
         /// <summary>
         /// Obtiene todos los productos en función a la categoria. 
@@ -64,5 +68,10 @@
         /// <returns></returns>
         Task<List<string>> GetProductSearchSuggestionsAsync(string searchText);
 
+        /// <summary>
+        /// añade a la lista AdminProducts todos los productos de la base de datos
+        /// </summary>
+        /// <returns></returns>
+        Task GetAdminProducts();
     }
 }

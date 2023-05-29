@@ -43,6 +43,11 @@
         /// </summary>
         /// <returns></returns>
         Task<ServiceResponse<List<Product>>> GetFeaturedProductsAsync();
+        /// <summary>
+        /// Devuelve un service response con todos los productos
+        /// </summary>
+        /// <returns></returns>
+        Task<ServiceResponse<List<Product>>> GetAdminProductsAsync();
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BlazorEcommerce.Server.Data;
 using BlazorEcommerce.Server.Services.ProductService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,6 +63,11 @@ namespace BlazorEcommerce.Server.Controllers
             var result = await _productService.GetFeaturedProductsAsync();
             return Ok(result);
         }
-
+        [HttpGet("admin"),Authorize(Roles ="Admin")]
+        public async Task<ActionResult<ServiceResponse<ProductSearchResultDTO>>> GetAdminProducts()
+        {
+            var result = await _productService.GetAdminProductsAsync();
+            return Ok(result);
+        }
     }
 }

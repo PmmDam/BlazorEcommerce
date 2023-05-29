@@ -15,6 +15,7 @@ namespace BlazorEcommerce.Client.Services.ProductService
 
         //Lista de productos centralizada en memoria 
         public List<Product> Products { get; set; } = new List<Product>();
+        public List<Product> AdminProducts { get; set; } = new List<Product>();
 
         public string Message { get; set; } = "Loading products...";
 
@@ -74,6 +75,18 @@ namespace BlazorEcommerce.Client.Services.ProductService
         {
             var result = await _http.GetFromJsonAsync<ServiceResponse<List<string>>>($"api/product/searchsuggestions/{searchText}");
             return result.Data;
+        }
+
+        public async Task GetAdminProducts()
+        {
+            var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product/admin");
+            AdminProducts = result.Data;
+            CurrentPage = 1;
+            PageCount = 0;
+            if(AdminProducts.Count == 0)
+            {
+                Message = "No se han econtrado productos.";
+            }
         }
     }
 }

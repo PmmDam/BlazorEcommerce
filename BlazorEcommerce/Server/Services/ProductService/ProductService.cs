@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.ResponseCaching;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection.Metadata.Ecma335;
 
 namespace BlazorEcommerce.Server.Services.ProductService
@@ -6,10 +7,12 @@ namespace BlazorEcommerce.Server.Services.ProductService
     public class ProductService : IProductService
     {
         private readonly DataContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProductService(DataContext context)
+        public ProductService(DataContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         /// <summary>
@@ -37,10 +40,25 @@ namespace BlazorEcommerce.Server.Services.ProductService
         public async Task<ServiceResponse<Product>> GetProductAsync(int productId)
         {
             var response = new ServiceResponse<Product>();
-            var product = await _context.Products
-                .Include(p => p.Variants.Where(variant => variant.Visible && !variant.Deleted))
-                .ThenInclude(v => v.ProductType)
-                .FirstOrDefaultAsync(product => product.Id == productId && !product.Deleted && product.Visible);
+            Product product = null;
+
+            //Comprobamos si el usuario está autenticado como Admin para devolver todos los productos que no estén borrados
+            if (_httpContextAccessor.HttpContext.User.IsInRole("Admin"))
+            {
+                product = await _context.Products
+               .Include(p => p.Variants.Where(variant => !variant.Deleted))
+               .ThenInclude(v => v.ProductType)
+               .FirstOrDefaultAsync(product => product.Id == productId && !product.Deleted);
+
+            }
+            else //Si no, devuelve los productos que son visible y no están borrados
+            {
+                product = await _context.Products
+               .Include(p => p.Variants.Where(variant => variant.Visible && !variant.Deleted))
+               .ThenInclude(v => v.ProductType)
+               .FirstOrDefaultAsync(product => product.Id == productId && !product.Deleted && product.Visible);
+
+            }
 
             if (product == null)
             {
@@ -170,6 +188,18 @@ namespace BlazorEcommerce.Server.Services.ProductService
             return response;
         }
 
+        public async Task<ServiceResponse<List<Product>>> GetAdminProductsAsync()
+        {
+            var response = new ServiceResponse<List<Product>>()
+            {
+                Data = await _context.Products
+                .Where(product => !product.Deleted)
+                .Include(product => product.Variants.Where(variant => !variant.Deleted))
+                .ThenInclude(variant => variant.ProductType)
+                .ToListAsync()
+            };
 
+            return response;
+        }
     }
 }
