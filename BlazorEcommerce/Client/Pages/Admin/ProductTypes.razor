@@ -1,5 +1,12 @@
 ﻿@page "/admin/product-types"
+
 @inject IProductTypeService ProductTypeService
+
+@*Definimos que el usuario tiene que estar autenticado y autorizado con el role admin para ver esta página*@
+@attribute [Authorize(Roles = "Admin")]
+
+@*Para utilizar correctamente el evento, tenemos que implementar la interfaz IDisposable y asegurarnos de desuscribirnos en el dispose*@
+@implements IDisposable
 
 
 <h3>Tipos de producto</h3>
@@ -50,6 +57,7 @@
     {
         //Inicializa la lista del ProductTypeService con todos los tipo de productos
         await ProductTypeService.GetProductTypes();
+        ProductTypeService.OnChange += StateHasChanged;
     }
 
     private void EditProductType(ProductType productType)
@@ -60,10 +68,23 @@
 
     private void CreateNewProductType()
     {
-
+        currentProductType = ProductTypeService.CreateNewProductType();
     }
     private async Task UpdateProductType()
     {
-
+        if (currentProductType.IsNew)
+        {
+            await ProductTypeService.AddProductTypes(currentProductType);
+        }
+        else
+        {
+            await ProductTypeService.UpdateProductTypes(currentProductType);
+            currentProductType = new ProductType();
+        }
     }
+    public void Dispose()
+    {
+        ProductTypeService.OnChange -= StateHasChanged;
+    }
+
 }
