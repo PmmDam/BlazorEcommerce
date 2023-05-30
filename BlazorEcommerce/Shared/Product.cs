@@ -19,7 +19,9 @@ namespace BlazorEcommerce.Shared
 
         //Aunque parezca redundante, facilita mucho la vida a la hora de trabajar con EntityFramework
         //tener el objeto nullable y la clave foranea del mismo. Explicaré los casos de usos en la memoria
+
         public Category? Category { get; set; }
+      
         public int CategoryId { get; set; }
 
         public bool Featured { get; set; } = false;

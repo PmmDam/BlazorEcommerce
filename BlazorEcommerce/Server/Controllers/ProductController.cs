@@ -81,7 +81,7 @@ namespace BlazorEcommerce.Server.Controllers
             var result = await _productService.UpdateProduct(product);
             return Ok(result);
         }
-        [HttpDelete]
+        [HttpDelete("{productId}"),Authorize(Roles ="Admin")]
         public async Task<ActionResult<ServiceResponse<bool>>> DeleteProduct(int productId)        {
             var result = await _productService.DeleteProduct(productId);
             return Ok(result);

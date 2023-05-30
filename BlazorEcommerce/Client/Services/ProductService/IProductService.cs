@@ -6,7 +6,7 @@
         /// Evento que actualizará el renderizado de los productos cuando se haga una petición
         /// </summary>
         event Action ProductsChanged;
-        
+
         /// <summary>
         /// Lista con los productos que puede ver un usuario normal
         /// </summary>
@@ -24,7 +24,7 @@
         /// <param name="categoryUrl"></param>
         /// <returns></returns>
         Task GetProductsAsync(string? categoryUrl = null);
-        
+
         /// <summary>
         /// Obtiene un producto en función del ID
         /// </summary>
@@ -42,12 +42,12 @@
         /// <summary>
         /// Almacenamos la página actual en la que estamos
         /// </summary>
-        int CurrentPage { get;set; }
+        int CurrentPage { get; set; }
 
         /// <summary>
         /// El total de páginas
         /// </summary>
-        int PageCount { get;set; }
+        int PageCount { get; set; }
 
         /// <summary>
         /// Tenemos que guardar cual ha sido la busqueda para que al paginar no perdamos esa información
@@ -59,7 +59,7 @@
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        Task SearchProductsAsync(string searchText,int page);
+        Task SearchProductsAsync(string searchText, int page);
 
         /// <summary>
         /// Hace una petición de la lista de sugerencias en función del parámetro de busqueda
@@ -73,5 +73,8 @@
         /// </summary>
         /// <returns></returns>
         Task GetAdminProducts();
+        Task<Product> CreateProductAsync(Product product);
+        Task<Product> UpdateProductAsync(Product product);
+        Task DeleteProductAsync(Product product);
     }
 }

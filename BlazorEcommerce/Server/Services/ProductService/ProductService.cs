@@ -209,6 +209,9 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 //Si no lo dejamos a null, Entity framework intentará crear de nuevo el variant y podría duplicarnos registros
                 variant.ProductType = null;
             }
+
+
+            product.Category= null;
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
@@ -238,15 +241,17 @@ namespace BlazorEcommerce.Server.Services.ProductService
             dbProduct.ImageUrl = product.ImageUrl;
             dbProduct.CategoryId = product.CategoryId;
             dbProduct.Visible = product.Visible;
+            dbProduct.Featured = product.Featured;
 
             //Y actualizamos tambien cada uno de sus variantes si las tuviera
             foreach (var variant in product.Variants)
             {
                 //Recuperamos la variante actual de la base de datos
                 var dbVariant = await _context.ProductVariants
-                    .SingleOrDefaultAsync(variant => variant.ProductId == variant.ProductId && variant.ProductTypeId == variant.ProductTypeId);
+                              .SingleOrDefaultAsync(v => v.ProductId == variant.ProductId && v.ProductTypeId == variant.ProductTypeId);
+
                 //Si no existe, la añadimos directamente pero antes poniendo el productType a null para que entity framework no nos duplique registros
-                if(dbVariant is null)
+                if (dbVariant is null)
                 {
                     variant.ProductType = null;
                     _context.ProductVariants.Add(variant);
@@ -259,6 +264,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                     dbVariant.OriginalPrice = variant.OriginalPrice;
                     dbVariant.Visible = variant.Visible;
                     dbVariant.Deleted = variant.Deleted;
+
                 }
             }
 
@@ -282,6 +288,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 };
             }
             dbProduct.Deleted = true;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return new ServiceResponse<bool> {  Data = true};
         }
     }

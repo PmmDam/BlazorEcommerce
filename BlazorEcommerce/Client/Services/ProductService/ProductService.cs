@@ -30,7 +30,7 @@ namespace BlazorEcommerce.Client.Services.ProductService
             var result = categoryUrl == null ?
                 await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product/featured") :
                 await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/product/category/{categoryUrl}");
-            if (result !=null && result.Data != null) 
+            if (result != null && result.Data != null)
             {
                 Products = result.Data;
             }
@@ -38,7 +38,7 @@ namespace BlazorEcommerce.Client.Services.ProductService
             CurrentPage = 1;
             PageCount = 0;
 
-            if(Products.Count == 0) 
+            if (Products.Count == 0)
             {
                 Message = "No products found";
             }
@@ -57,13 +57,13 @@ namespace BlazorEcommerce.Client.Services.ProductService
             LastSearchText = searchText;
             var result = await _http.GetFromJsonAsync<ServiceResponse<ProductSearchResultDTO>>($"api/product/search/{searchText}/{page}");
 
-            if(result != null && result.Data != null)
+            if (result != null && result.Data != null)
             {
                 Products = result.Data.Products;
                 CurrentPage = result.Data.CurrentPage;
                 PageCount = result.Data.Pages;
             }
-            if(Products.Count == 0)
+            if (Products.Count == 0)
             {
                 Message = "No products found.";
             }
@@ -79,14 +79,32 @@ namespace BlazorEcommerce.Client.Services.ProductService
 
         public async Task GetAdminProducts()
         {
-            var result = await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product/admin");
+            var result = await _http
+                           .GetFromJsonAsync<ServiceResponse<List<Product>>>("api/product/admin");
             AdminProducts = result.Data;
             CurrentPage = 1;
             PageCount = 0;
-            if(AdminProducts.Count == 0)
-            {
-                Message = "No se han econtrado productos.";
-            }
+            if (AdminProducts.Count == 0)
+                Message = "No se han encontrado productos";
+        }
+
+        public async Task<Product> CreateProductAsync(Product product)
+        {
+            var result = await _http.PostAsJsonAsync("api/product", product);
+            var newProduct = (await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>()).Data;
+            return newProduct;
+        }
+
+        public async Task<Product> UpdateProductAsync(Product product)
+        {
+            var result = await _http.PutAsJsonAsync($"api/product", product);
+            return (await result.Content.ReadFromJsonAsync<ServiceResponse<Product>>()).Data;
+        }
+
+        public async Task DeleteProductAsync(Product product)
+        {
+            var result = await _http.DeleteAsync($"api/product/{product.Id}");
+            
         }
     }
 }
