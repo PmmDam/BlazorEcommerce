@@ -8,18 +8,21 @@ namespace BlazorEcommerce.Server.Services.PaymentService
         private readonly IOrderService _orderService;
         private readonly IAuthService _authService;
         private readonly ICartService _cartService;
+        private readonly IConfiguration _config;
 
         //Key para utilizar el webhook que nos comunicará si el pago de stripe ha ido bien
-        const string secretWebhookKey = "whsec_fe41c9afa6c0823c2d901c8fdc16701fb0ba0a09b7b878e127a6a6ff80bd1ebf";
+        private string secretWebhookKey = string.Empty;
 
-        public PaymentService(IOrderService orderService, IAuthService authService, ICartService cartService)
+        public PaymentService(IOrderService orderService, IAuthService authService, ICartService cartService,IConfiguration config)
         {
 
-            StripeConfiguration.ApiKey = "sk_test_51NBtmeJPujyepjLsyAGO81ij7HX9kl4zySOlIxLQcnUefl6YTxknXMVNqerEoOGzu9IJJEEKOdwUX66s7gRiSFdC006JBClxR5";
             _orderService = orderService;
             _authService = authService;
             _cartService = cartService;
+            _config = config;
 
+            StripeConfiguration.ApiKey = _config.GetSection("AppSettings:StripeApiKey").Value;
+            secretWebhookKey = _config.GetSection("AppSettings:StripePaymentWebHook").Value;
 
         }
 
