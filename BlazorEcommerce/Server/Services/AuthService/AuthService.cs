@@ -28,7 +28,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
         public async Task<ServiceResponse<string>> LoginAsync(string email, string password)
         {
             var response = new ServiceResponse<string>();
-            var user  = await _context.Users.FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email.ToLower()));
+            var user  = await _context.Users.Include(user => user.Role).FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email.ToLower()));
 
             if(user == null)
             {
@@ -107,7 +107,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Role, user.Role.Name),
 
             };
 
