@@ -27,9 +27,20 @@ else
             </tr>
         </thead>
         <tbody>
+            @*Es un foreach que implemente lazy loading items en el DOM, es decir, permite ir cargando los componentes según sea necesario*@
             <Virtualize Items="ProductService.AdminProducts" Context="product">
                 <tr>
-                    <td><img src="@product.ImageUrl" /></td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl" />
+                        }
+                        else if (product.Images.Count > 0)
+                        {
+                            <img src="@product.Images[0].Data" />
+                        }
+                        
+                    </td>
                     <td>@product.Title</td>
                     <td>
                         @foreach (var variant in product.Variants)
@@ -69,7 +80,7 @@ else
     }
     private void EditProduct(int productId)
     {
-        NavigationManager.NavigateTo($"admin/product/{productId}");        
+        NavigationManager.NavigateTo($"admin/product/{productId}");
     }
     private void CreateProduct()
     {

@@ -3,7 +3,7 @@
 @inject ICartService CartService
 
 
-@if(product == null)
+@if (product == null)
 {
     <span>@message</span>
 }
@@ -11,20 +11,32 @@ else
 {
     <div class="media">
         <div class="media-img-wrapper mr2">
-            <img class="media-img" src="@product.ImageUrl" alt="@product.Title"/>
+            @if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                <img class="media-img" src="@product.ImageUrl" alt="@product.Title" />
+            }
+            else
+            {
+                <MudCarousel Class="mud-width-full" ItemsSource="@product.Images" Style="height:200px;">
+                    <ItemTemplate>
+                        <MudImage Src="@context.Data"></MudImage>
+                    </ItemTemplate>
+                </MudCarousel>
+            }
+
         </div>
         <div class="media-body">
             <h2 class="mb-0">@product.Title</h2>
             <p>@product.Description</p>
-            
+
             @*Despegable para seleccionar un variant*@
 
-            @if(product.Variants != null && product.Variants.Count > 1)
+            @if (product.Variants != null && product.Variants.Count > 1)
             {
                 <div class="mb-3">
-                    
+
                     <select class="form-select" @bind="currentTypeId">
-                        @foreach(var variant in product.Variants)
+                        @foreach (var variant in product.Variants)
                         {
                             <option value="@variant.ProductTypeId"> @variant.ProductType.Name</option>
                         }
@@ -34,9 +46,9 @@ else
             }
             @*Comprobamos si el producto tiene un precio original mayor que el de la variante para renderizarlo o no*@
             @*Como posible refactor, sería interesante cachear el variant que devuelve GetSelectedVariant()*@
-            @if(GetSelectedVariant() != null)
+            @if (GetSelectedVariant() != null)
             {
-                @if(GetSelectedVariant().OriginalPrice > GetSelectedVariant().Price)
+                @if (GetSelectedVariant().OriginalPrice > GetSelectedVariant().Price)
                 {
                     <h6 class="text-muted original-price">
                         @GetSelectedVariant().OriginalPrice€

@@ -43,7 +43,7 @@ else
         </div>
 
         @*Imágen*@
-        <div class="mb-0">
+        <div class="mb-0" style="display: flex; flex-wrap:wrap; flex-direction: row; justify-content: center;">
             @if (!string.IsNullOrEmpty(product.ImageUrl))
             {
                 <img src="@product.ImageUrl" />
@@ -53,8 +53,16 @@ else
                 foreach (var image in product.Images)
                 {
                     @*Imagen guardada en la base de datos como un string en base64*@
-                    <img src="@image.Data" />
-                    <button type="button" @onclick="(()=>RemoveImage(image.Id))">Borrar</button>
+                    @*<img src="@image.Data" />
+                    <button type="button" @onclick="(()=>RemoveImage(image.Id))">Borrar</button>*@
+                    <MudCard Class="ma-2">
+                        <MudCardContent>
+                            <MudImage Src="@image.Data"></MudImage>
+                        </MudCardContent>
+                        <MudCardActions Style="justify-content:center;"> 
+                            <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="@(()=> RemoveImage(image.Id))">Borrar</MudButton>
+                        </MudCardActions>
+                    </MudCard>
                 }
             }
 
