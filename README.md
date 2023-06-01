@@ -5,11 +5,11 @@ Para poder **trabajar en local** con este repositorio necesitas cumplir con los 
 + Visual Studio 2022
 + Una instancia de Sql Server
   + y ejecutar este script.sql para crear la base de datos    
-+ Un fichero de configuración llamado appsetings.json con los siguientes campos
-  ```javascript
++ Un fichero de configuración, en la carpeta raiz del proyecto .Server, llamado appsetings.json con el siguiente contenido modificado. Para ello necesitas una cuenta de developer de Stripe. En caso contrario, no funcionará correctamente el pago del pedido.
+  ```json
   {
     "ConnectionStrings": {
-      "DefaultConnection": "Data Source=127.0.0.1;Initial Catalog=BlazorEcommerce;User ID=Login_Admin_User;Password=123456789/a;TrustServerCertificate=True"
+      "DefaultConnection": "Data Source=127.0.0.1;Initial Catalog=Nombre_DB;User ID=DB_User;Password=TuContraseña;TrustServerCertificate=True"
     },
     "AppSettings": {
       "Token": "my top secret key",
@@ -23,4 +23,4 @@ Para poder **trabajar en local** con este repositorio necesitas cumplir con los 
       }
     },
     "AllowedHosts": "*"
-  }```
+  }
