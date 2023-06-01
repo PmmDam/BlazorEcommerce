@@ -16,6 +16,7 @@ namespace BlazorEcommerce.Shared
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
+        public List<Image> Images { get; set; } = new List<Image>();
 
         //Aunque parezca redundante, facilita mucho la vida a la hora de trabajar con EntityFramework
         //tener el objeto nullable y la clave foranea del mismo. Explicaré los casos de usos en la memoria

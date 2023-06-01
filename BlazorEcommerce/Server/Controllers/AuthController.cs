@@ -24,7 +24,7 @@ namespace BlazorEcommerce.Server.Controllers
             // que solo tenga un email. He leído varias cosas al respecto y no parece haber un consenso claro. Por un lado es una mala práctica pero por otro para determinadas cosas
             // relacionadas con el funcionamiento de los ORMs es necesario que los modelos tengan un constructor por defecto al que no se le pasan parámetros. Diría que me falta todavía 
             // experiencia para determinar cual es la decisión más óptima aunque, como diría Paco, Depende.
-            var response = await _authService.Register(new User { Email = request.Email }, request.Password);
+            var response = await _authService.RegisterAsync(new User { Email = request.Email }, request.Password);
 
             //Clausual Guarda
             if (!response.Success)
@@ -54,7 +54,7 @@ namespace BlazorEcommerce.Server.Controllers
         {
             //Obtenemos el user id de los Claims gracias a JWT
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var response = await _authService.ChangePassword(int.Parse(userId), password);
+            var response = await _authService.ChangePasswordAsync(int.Parse(userId), password);
 
             if (!response.Success)
             {

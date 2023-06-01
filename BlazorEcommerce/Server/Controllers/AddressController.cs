@@ -19,12 +19,12 @@ namespace BlazorEcommerce.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<Address>>> GetAddress()
         {
-            return await _addressService.GetAddress();
+            return await _addressService.GetAddressAsync();
         }
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Address>>> AddOrUpdateAddress(Address address)
         {
-            return await _addressService.AddOrUpdateAddress(address);
+            return await _addressService.AddOrUpdateAddressAsync(address);
         }
     }
 }

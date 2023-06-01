@@ -26,9 +26,9 @@ namespace BlazorEcommerce.Server.Services.PaymentService
 
         }
 
-        public async Task<Session> CreateCheckoutSession()
+        public async Task<Session> CreateCheckoutSessionAsync()
         {
-            var products = (await _cartService.GetDbCartProducts()).Data;
+            var products = (await _cartService.GetDbCartProductsAsync()).Data;
 
             //Creamos las lineas que se verán en el checkout de stripe. Indicando el tipo de moneda, precio , nombre e imagenes
             var lineItems = new List<SessionLineItemOptions>();
@@ -75,7 +75,7 @@ namespace BlazorEcommerce.Server.Services.PaymentService
             return session;
         }
 
-        public async Task<ServiceResponse<bool>> FulfillOrder(HttpRequest request)
+        public async Task<ServiceResponse<bool>> FulfillOrderAsync(HttpRequest request)
         {
             var json = await new StreamReader(request.Body).ReadToEndAsync();
             try
@@ -85,8 +85,8 @@ namespace BlazorEcommerce.Server.Services.PaymentService
                 if(stripeEvent.Type == Events.CheckoutSessionCompleted)
                 {
                     var session = stripeEvent.Data.Object as Session;
-                    var user = await _authService.GetUserByEmail(session.CustomerEmail);
-                    await _orderService.PlaceOrder(user.Id);
+                    var user = await _authService.GetUserByEmailAsync(session.CustomerEmail);
+                    await _orderService.PlaceOrderAsync(user.Id);
                 }
                 return new ServiceResponse<bool> { Data = true };
             }

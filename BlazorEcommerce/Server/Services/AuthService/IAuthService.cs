@@ -8,14 +8,14 @@
         /// <param name="user"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        Task<ServiceResponse<int>> Register(User user,string password);
+        Task<ServiceResponse<int>> RegisterAsync(User user,string password);
 
         /// <summary>
         /// Comprobamos si el email existe en la plataforma
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        Task<bool> UserExists(string email);
+        Task<bool> UserExistsAsync(string email);
 
         /// <summary>
         /// Login del usuario utilizando JsonWebTokens
@@ -25,11 +25,11 @@
         /// <returns></returns>
         Task<ServiceResponse<string>> LoginAsync(string email, string password);
 
-        Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword);
+        Task<ServiceResponse<bool>> ChangePasswordAsync(int userId, string newPassword);
 
         int GetUserId();
         string GetUserEmail();
-        Task<User> GetUserByEmail(string email);
+        Task<User> GetUserByEmailAsync(string email);
 
     }
 }

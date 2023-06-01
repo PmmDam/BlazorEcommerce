@@ -9,7 +9,7 @@
             _context = context;
         }
 
-        public async Task<ServiceResponse<List<ProductType>>> AddProductType(ProductType productType)
+        public async Task<ServiceResponse<List<ProductType>>> AddProductTypeAsync(ProductType productType)
         {
             productType.Editing = false;
             productType.IsNew= false;
@@ -34,7 +34,7 @@
             return new ServiceResponse<List<ProductType>> { Data = productTypes };
         }
 
-        public async Task<ServiceResponse<List<ProductType>>> UpdateProductType(ProductType productType)
+        public async Task<ServiceResponse<List<ProductType>>> UpdateProductTypeAsync(ProductType productType)
         {
             //Obtenemos el tipo de producto de la base de datos
             var dbProductType = await _context.ProductTypes.FindAsync(productType.Id);

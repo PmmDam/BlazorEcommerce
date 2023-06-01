@@ -141,7 +141,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText)
+        public async Task<ServiceResponse<List<string>>> GetProductSearchSuggestionsAsync(string searchText)
         {
             var products = await FindProductBySearchTextAsync(searchText);
 
@@ -202,7 +202,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
             return response;
         }
 
-        public async Task<ServiceResponse<Product>> CreateProduct(Product product)
+        public async Task<ServiceResponse<Product>> CreateProductAsync(Product product)
         {
             foreach(var variant in product.Variants)
             {
@@ -223,7 +223,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
         /// </summary>
         /// <param name="product"></param>
         /// <returns></returns>
-        public async Task<ServiceResponse<Product>> UpdateProduct(Product product)
+        public async Task<ServiceResponse<Product>> UpdateProductAsync(Product product)
         {
             //Buscamos el producto en la base de datos
             var dbProduct = await _context.Products.FindAsync(product.Id);
@@ -275,7 +275,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
             return new ServiceResponse<Product> { Data = dbProduct };
         }
 
-        public async Task<ServiceResponse<bool>> DeleteProduct(int productId)
+        public async Task<ServiceResponse<bool>> DeleteProductAsync(int productId)
         {
             var dbProduct = await _context.Products.FindAsync(productId);
             if (dbProduct is null)

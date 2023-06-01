@@ -39,7 +39,7 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Task<Category>GetCategoryById(int id);
+        Task<Category>GetCategoryByIdAsync(int id);
 
     }
 }

@@ -35,7 +35,7 @@
         /// </summary>
         /// <param name="searchText"></param>
         /// <returns></returns>
-        Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText);
+        Task<ServiceResponse<List<string>>> GetProductSearchSuggestionsAsync(string searchText);
 
 
         /// <summary>
@@ -49,9 +49,9 @@
         /// <returns></returns>
         Task<ServiceResponse<List<Product>>> GetAdminProductsAsync();
 
-        Task<ServiceResponse<Product>> CreateProduct(Product product);
-        Task<ServiceResponse<Product>> UpdateProduct(Product product);
-        Task<ServiceResponse<bool>> DeleteProduct(int productId);
+        Task<ServiceResponse<Product>> CreateProductAsync(Product product);
+        Task<ServiceResponse<Product>> UpdateProductAsync(Product product);
+        Task<ServiceResponse<bool>> DeleteProductAsync(int productId);
 
     }
 }

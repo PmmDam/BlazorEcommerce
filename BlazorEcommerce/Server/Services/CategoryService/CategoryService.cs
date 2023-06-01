@@ -39,7 +39,7 @@
         /// <exception cref="NotImplementedException"></exception>
         public async Task<ServiceResponse<List<Category>>> DeleteCategoryAsync(int id)
         {
-            var category = await GetCategoryById(id);
+            var category = await GetCategoryByIdAsync(id);
 
             //Clausula guarda
             if (category == null)
@@ -68,7 +68,7 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<Category> GetCategoryById(int id)
+        public async Task<Category> GetCategoryByIdAsync(int id)
         {
             return await _context.Categories.FirstOrDefaultAsync(category => category.Id == id);
         }
@@ -93,7 +93,7 @@
 
         public async Task<ServiceResponse<List<Category>>> UpdateCategoryAsync(Category category)
         {
-            var dbCategory = await GetCategoryById(category.Id);
+            var dbCategory = await GetCategoryByIdAsync(category.Id);
             if(category == null)
             {
                 return CategoryNotFoundResponse();

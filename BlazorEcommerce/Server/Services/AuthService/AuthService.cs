@@ -50,10 +50,10 @@ namespace BlazorEcommerce.Server.Services.AuthService
             return response;
         }
 
-        public async Task<ServiceResponse<int>> Register(User user, string password)
+        public async Task<ServiceResponse<int>> RegisterAsync(User user, string password)
         {
             //Clausula guarda
-            if (await UserExists(user.Email))
+            if (await UserExistsAsync(user.Email))
             {
                 return new ServiceResponse<int> { Success = false, Message = "El email está en uso" };
             }
@@ -74,7 +74,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             //Devolvemos la respuesta con el id del usuario
             return new ServiceResponse<int> { Data = user.Id,Message="Registro completado!" };
         }
-        public async Task<bool> UserExists(string email)
+        public async Task<bool> UserExistsAsync(string email)
         {
             bool result = false;
             if(await _context.Users.AnyAsync(x => x.Email.ToLower().Equals(email.ToLower())))
@@ -122,7 +122,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             return jwt;
         }
 
-        public async Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword)
+        public async Task<ServiceResponse<bool>> ChangePasswordAsync(int userId, string newPassword)
         {
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
@@ -154,7 +154,7 @@ namespace BlazorEcommerce.Server.Services.AuthService
             return _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
         }

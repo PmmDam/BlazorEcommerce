@@ -15,7 +15,7 @@ namespace BlazorEcommerce.Server.Services.OrderService
             _authService = authService;
         }
 
-        public async Task<ServiceResponse<OrderDetailsResponseDTO>> GetOrderDetails(int orderId)
+        public async Task<ServiceResponse<OrderDetailsResponseDTO>> GetOrderDetailsAsync(int orderId)
         {
             var response = new ServiceResponse<OrderDetailsResponseDTO>();
 
@@ -55,7 +55,7 @@ namespace BlazorEcommerce.Server.Services.OrderService
             return response;
         }
 
-        public async Task<ServiceResponse<List<OrderOverviewResponseDTO>>> GetOrders()
+        public async Task<ServiceResponse<List<OrderOverviewResponseDTO>>> GetOrdersAsync()
         {
             //Inicializamos la respuesta del servidor
             var response = new ServiceResponse<List<OrderOverviewResponseDTO>>();
@@ -88,10 +88,10 @@ namespace BlazorEcommerce.Server.Services.OrderService
             return response;
         }
 
-        public async Task<ServiceResponse<bool>> PlaceOrder(int userId)
+        public async Task<ServiceResponse<bool>> PlaceOrderAsync(int userId)
         {
             //Obtiene los productos del carrito
-            var products = (await _cartService.GetDbCartProducts(userId)).Data;
+            var products = (await _cartService.GetDbCartProductsAsync(userId)).Data;
 
             //Precio total del pedido
             decimal totalPrice = 0;
