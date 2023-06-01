@@ -15,7 +15,7 @@ global using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Blazored.LocalStorage;
-
+using MudBlazor.Services;
 
 namespace BlazorEcommerce.Client
 {
@@ -28,6 +28,7 @@ namespace BlazorEcommerce.Client
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddMudServices();  
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             //registramos las implementaciones concretas a las interfaces correspondientes en el contenedor de dependencias
