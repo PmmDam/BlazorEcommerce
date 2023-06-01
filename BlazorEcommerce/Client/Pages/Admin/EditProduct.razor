@@ -44,7 +44,26 @@ else
 
         @*Imágen*@
         <div class="mb-0">
-            <img src="@product.ImageUrl" />
+            @if (!string.IsNullOrEmpty(product.ImageUrl))
+            {
+                <img src="@product.ImageUrl" />
+            }
+            else
+            {
+                foreach (var image in product.Images)
+                {
+                    @*Imagen guardada en la base de datos como un string en base64*@
+                    <img src="@image.Data" />
+                }
+            }
+
+        </div>
+
+
+        @*Imágenes*@
+        <div class="mb-0">
+            <label for="images">Imágenes</label>
+            <InputFile id="images" OnChange="OnFileChange" multiple class="form-control "></InputFile>
         </div>
 
         @*Descripción*@
@@ -173,9 +192,6 @@ else
     {
         await ProductTypeService.GetProductTypes();
         await CategoryService.GetAdminCategories();
-
-
-
     }
 
     protected override async Task OnParametersSetAsync()
@@ -257,5 +273,30 @@ else
         }
 
 
+    }
+
+    private async Task OnFileChange(InputFileChangeEventArgs e)
+    {
+        //Elegimos el formato de la imagen
+        var format = "image/png";
+
+        //Obtenemos todas las imagenes que ha lanzado el evento
+        foreach (var image in e.GetMultipleFiles(int.MaxValue))
+        {
+            //Ajustamos el tamaño
+            var resizedImage = await image.RequestImageFileAsync(format,200,200);
+
+            //Obtenemos un array de bytes con el tamaño de la imagen reajustada
+            var buffer = new byte[resizedImage.Size];
+
+            //Abrimos un stream para leer el buffer de la imagen y guardarlo en nuestro array de bytes
+            await resizedImage.OpenReadStream().ReadAsync(buffer);
+
+            //Creamos la imagen con el formato que va a tener en base de datos
+            var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+
+            //Lo añádimos a la lista de imagenes del producto
+            product.Images.Add(new Image{Data = imageData});
+        }
     }
 }

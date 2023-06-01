@@ -48,6 +48,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 product = await _context.Products
                .Include(p => p.Variants.Where(variant => !variant.Deleted))
                .ThenInclude(v => v.ProductType)
+               .Include(p=>p.Images)
                .FirstOrDefaultAsync(product => product.Id == productId && !product.Deleted);
 
             }
