@@ -54,6 +54,7 @@ else
                 {
                     @*Imagen guardada en la base de datos como un string en base64*@
                     <img src="@image.Data" />
+                    <button type="button" @onclick="(()=>RemoveImage(image.Id))">Borrar</button>
                 }
             }
 
@@ -297,6 +298,15 @@ else
 
             //Lo añádimos a la lista de imagenes del producto
             product.Images.Add(new Image{Data = imageData});
+        }
+    }
+
+    private void RemoveImage(int imageId)
+    {
+        var image = product.Images.FirstOrDefault(image => image.Id == imageId);
+        if(image != null)
+        {
+            product.Images.Remove(image);
         }
     }
 }

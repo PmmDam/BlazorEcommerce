@@ -27,6 +27,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 .Where(product => product.Visible && !product.Deleted)
                 .Include(product => product.Variants
                                     .Where(variant => variant.Visible && !variant.Deleted))
+                .Include(p => p.Images)
                 .ToListAsync()
             };
             return response;
@@ -57,6 +58,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 product = await _context.Products
                .Include(p => p.Variants.Where(variant => variant.Visible && !variant.Deleted))
                .ThenInclude(v => v.ProductType)
+               .Include(p => p.Images)
                .FirstOrDefaultAsync(product => product.Id == productId && !product.Deleted && product.Visible);
 
             }
@@ -64,7 +66,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
             if (product == null)
             {
                 response.Success = false;
-                response.Message = "Sorry, but this product does not exist.";
+                response.Message = "Sorry, but this p does not exist.";
             }
             else
             {
@@ -118,6 +120,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                             .Where(product => product.Title.ToLower().Contains(searchText.ToLower()) ||
                             product.Description.ToLower().Contains(searchText.ToLower()) && product.Visible && !product.Deleted)
                             .Include(product => product.Variants.Where(variant => variant.Visible && !variant.Deleted))
+                            .Include(p => p.Images)
                             .Skip((page - 1) * (int)pageResults)
                             .Take((int)pageResults)
                             .ToListAsync();
@@ -175,6 +178,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
             return new ServiceResponse<List<string>> { Data = result };
         }
 
+        //Obtiene los productos destacados
         public async Task<ServiceResponse<List<Product>>> GetFeaturedProductsAsync()
         {
             var response = new ServiceResponse<List<Product>>()
@@ -183,6 +187,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 .Where(product => product.Featured && product.Visible && !product.Deleted)
                 .Include(product => product.Variants.
                                     Where(variant => variant.Visible && !variant.Deleted))
+                .Include(p => p.Images)
                 .ToListAsync()
             };
 
@@ -197,6 +202,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 .Where(product => !product.Deleted)
                 .Include(product => product.Variants.Where(variant => !variant.Deleted))
                 .ThenInclude(variant => variant.ProductType)
+                .Include(p => p.Images)
                 .ToListAsync()
             };
 
@@ -227,7 +233,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
         public async Task<ServiceResponse<Product>> UpdateProductAsync(Product product)
         {
             //Buscamos el producto en la base de datos
-            var dbProduct = await _context.Products.FindAsync(product.Id);
+            var dbProduct = await _context.Products.Include(p=> p.Images).FirstOrDefaultAsync(p=>p.Id == product.Id);
             if (dbProduct is null)
             {
                 return new ServiceResponse<Product>
@@ -243,6 +249,13 @@ namespace BlazorEcommerce.Server.Services.ProductService
             dbProduct.CategoryId = product.CategoryId;
             dbProduct.Visible = product.Visible;
             dbProduct.Featured = product.Featured;
+            
+            //Borramos todos las imagenes del producto y guardamos las nuevas
+            var productImages = dbProduct.Images;
+            _context.Images.RemoveRange(productImages);
+
+            //Guardamos en el producto de base de datos las imagenes recibidas como parametro
+            dbProduct.Images = product.Images;
 
             //Y actualizamos tambien cada uno de sus variantes si las tuviera
             foreach (var variant in product.Variants)

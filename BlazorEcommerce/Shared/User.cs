@@ -15,6 +15,6 @@ namespace BlazorEcommerce.Shared
         public DateTime DateCreated { get; set; }= DateTime.Now;
         public Address Address { get; set; }
         public Role Role { get; set; }
-        public int RoleId { get; set; }
+        public int RoleId { get; set; } = 1; //Por defecto le asignamos el rol "Customer"
     }
 }
