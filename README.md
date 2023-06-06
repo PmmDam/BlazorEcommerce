@@ -5,6 +5,7 @@ Para poder **trabajar en local** con este repositorio necesitas cumplir con los 
 ### Software
 + Visual Studio 2022
 + Una instancia de Sql Server
++ Se recomienda el uso de  SQL Server Management Studio - SSMS
 ### Ficheros de configuración
 + Script SQL para generar la [base de datos](https://github.com/PmmDam/BlazorEcommerce/blob/master/generate_salty_db.sql) desde cero con datos de prueba
   + Al usar Entity Framework, en el CLI del Packagme manager, podemos crear directamente el esquema de base de datos con el contenido del directorio Migrations en el proyecto de servidor con el siguiente comando. Es importante asegurarse de estar posicionado en el directorio del proyecto de servidor en el package manager.
