@@ -87,6 +87,7 @@ namespace BlazorEcommerce.Server.Services.ProductService
                 .Where(product => product.Category.Url.ToLower().Equals(categoryUrl.ToLower()) && product.Visible && !product.Deleted)
                 .Include(product => product.Variants
                                 .Where(variant => variant.Visible && !variant.Deleted))
+                 .Include(p => p.Images)
                 .ToListAsync()
             };
             return response;

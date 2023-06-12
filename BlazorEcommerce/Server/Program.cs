@@ -32,7 +32,8 @@ namespace BlazorEcommerce
             //Añadimos el contecto de nuestra base de datos y nos conectamos con la cadena de conexión por defecto almacenada en appsettings.json
             builder.Services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("StagingConnection"));
+                //options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
                 //options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionConnection"));
             });
 
